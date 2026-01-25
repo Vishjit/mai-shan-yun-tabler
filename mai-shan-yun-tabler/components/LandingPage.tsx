@@ -17,7 +17,7 @@
         </button>
 
         <div className="absolute left-[150px] top-[80px] flex justify-center items-center text-[#3D3D3D] text-[70px] font-['Jost'] font-bold leading-[32px] z-20">
-          Mai Shan Yun Tabler
+          MaiPOS
         </div>
         <div className="absolute left-[150px] top-[160px] flex justify-center items-center text-[#3D3D3D] text-[40px] font-['Jost'] font-normal leading-[32px] z-20">
           From table to kitchen, simplified.

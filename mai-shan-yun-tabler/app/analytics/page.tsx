@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import TableButton from "@/components/tablesbutton";
 import MenuButton from "../../components/menubutton";
 import Kitchenbutton from "@/components/kitchenbutton";
+import MenuItem from "@/components/MenuItem";
+import { menuItems } from "@/lib/menu";
 
 export default function Analytics() {
   const router = useRouter();
@@ -71,7 +73,7 @@ export default function Analytics() {
 
        {/* Clouds*/}
       <img src="/cloud (8).svg" alt="cloud" className="absolute z-10 left-[20%] top-[20%] w-[7%] h-auto object-contain anim-cloud" />
-      <img src="/cloud (3).svg" alt="cloud" className="absolute z-10 right-[7%] top-[5%] w-[180px] h-auto object-contain anim-cloud-long" />
+      <img src="/cloud (3).svg" alt="cloud" className="absolute z-10 right-[7%] top-[5%] w-45 h-auto object-contain anim-cloud-long" />
 
       <div className="absolute top-[8%] w-full text-center pointer-events-none">
         <div className="text-[60px] font-['Jost'] font-bold">Analytics</div>
@@ -97,15 +99,25 @@ export default function Analytics() {
           </div>
 
           <div>
-            <div className="text-lg font-bold mb-2">Popular Items:</div>
-            <ul className="space-y-2">
-              {metrics.popular.map((p: any, idx: number) => (
-                <li key={idx} className="flex justify-between w-2/3">
-                  <span>{p.name}</span>
-                  <span className="text-[#3D3D3D]">{p.qty}</span>
-                </li>
-              ))}
-            </ul>
+            <div className="text-lg font-bold mb-4">Popular Items:</div>
+            <div className="grid grid-cols-3 gap-6">
+              {metrics.popular.map((p: any, idx: number) => {
+                const item = menuItems.find((m) => m.name === p.name) || { id: `p-${idx}`, name: p.name, price: 0, ingredients: "" };
+                return (
+                  <div key={item.id} className="relative">
+                    <div className="absolute -top-3 -left-3 bg-[#AF3939] text-white rounded-full w-7 h-7 flex items-center justify-center z-50 font-bold">{idx + 1}</div>
+                    <MenuItem
+                      name={item.name}
+                      price={item.price}
+                      ingredients={item.ingredients}
+                      onClick={() => {}}
+                      className="h-40"
+                      orderCount={p.qty}
+                    />
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
 
