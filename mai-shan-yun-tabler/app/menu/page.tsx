@@ -109,34 +109,6 @@ export default function Menu() {
             className="absolute z-10 right-[3%] top-[10%] w-40 h-auto object-contain anim-cloud-long"
           />
 
-          {/* POPULAR ITEMS */}
-          <div className="mt-8 px-16">
-            <h3 className="text-2xl font-bold mb-4">Popular Items:</h3>
-            <div className="grid grid-cols-4 gap-6">
-              {(() => {
-                const popularIds = [1, 56, 57, 29];
-                const popular = popularIds
-                  .map((id) => menuItems.find((m) => m.id === id))
-                  .filter(Boolean) as any[];
-
-                return popular.map((item, idx) => (
-                  <div key={item.id} className="relative">
-                    <div className="absolute -top-3 -left-3 bg-[#AF3939] text-white rounded-full w-7 h-7 flex items-center justify-center z-50 font-bold">{idx + 1}</div>
-                    <MenuItem
-                      name={item.name}
-                      price={item.price}
-                      ingredients={item.ingredients}
-                      onClick={() => {
-                        setSelectedItem(item as any);
-                        setQuantity(1);
-                      }}
-                    />
-                  </div>
-                ));
-              })()}
-            </div>
-          </div>
-
           {/* MENU ITEMS - GROUPED BY CATEGORY  */}
           <div className="mt-40 px-16 pb-16 overflow-y-auto h-[calc(100vh-160px)]">
             {(() => {
