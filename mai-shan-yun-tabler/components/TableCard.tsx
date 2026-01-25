@@ -15,17 +15,26 @@ export default function TableCard({ id, status, isSelected, onClick }: TableCard
     alert: "bg-red-500",
   };
 
-  const borderColor = isSelected ? "border-blue-500" : "border-gray-300";
-
   return (
     <div
-      className={`relative rounded-xl bg-white p-4 shadow border-2 ${borderColor} cursor-pointer`}
+      className={`relative cursor-pointer w-48 h-48 flex-shrink-0`}
       onClick={onClick}
+      style={{
+        border: isSelected ? "4px solid #3B82F6" : "2px solid transparent",
+      }}
     >
-      <span
-        className={`absolute top-2 right-2 h-3 w-3 rounded-full ${statusColor[status]}`}
+      {/* Status indicator */}
+      <div
+        className={`w-3 h-3 rounded-full ${statusColor[status]} absolute top-2 right-2`}
+        aria-label={`Table ${id} status: ${status}`}
       />
-      <h2 className="text-lg font-bold">Table {id}</h2>
+
+      {/* Table SVG */}
+      <img
+        src="/table.svg"
+        alt={`Table ${id}`}
+        className="w-full h-full object-contain"
+      />
     </div>
   );
 }
