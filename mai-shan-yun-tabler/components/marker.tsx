@@ -17,7 +17,7 @@ interface MarkerProps {
   onCardMouseDown?: (e: React.MouseEvent, id: number) => void;
   onDelete?: (id: number) => void;
 
-  // NEW
+  // NEW: functions to handle status changes
   onStatusForward?: (id: number) => void;
   onStatusBackward?: (id: number) => void;
 }
@@ -35,7 +35,7 @@ export default function Marker({
   onStatusForward,
   onStatusBackward,
 }: MarkerProps) {
-  const statusBg = {
+  const statusBg: Record<TableStatus, string> = {
     available: "bg-green-300",
     ordering: "bg-amber-300",
     alert: "bg-red-300",
@@ -73,10 +73,10 @@ export default function Marker({
         #{markerNumber}
       </div>
 
-      {/* Status arrows (ONLY visual, no layout impact) */}
+      {/* Status arrows (centered vertically) */}
       {isSelected && (
         <>
-          {/* Backward */}
+          {/* Backward arrow */}
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -84,17 +84,15 @@ export default function Marker({
             }}
             title="Previous status"
             className="
-              absolute left-2 top-2
-              text-[#57321F]/50
-              hover:text-[#57321F]
-              hover:scale-110
-              transition
+              absolute left-[-10px] top-1/2 transform -translate-y-1/2
+              text-[#57321F]/50 hover:text-[#57321F]
+              hover:scale-110 transition
             "
           >
             <RiArrowLeftSLine className="w-4 h-4" />
           </button>
 
-          {/* Forward */}
+          {/* Forward arrow */}
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -102,11 +100,9 @@ export default function Marker({
             }}
             title="Next status"
             className="
-              absolute right-2 top-2
-              text-[#57321F]/50
-              hover:text-[#57321F]
-              hover:scale-110
-              transition
+              absolute right-[-10px] top-1/2 transform -translate-y-1/2
+              text-[#57321F]/50 hover:text-[#57321F]
+              hover:scale-110 transition
             "
           >
             <RiArrowRightSLine className="w-4 h-4" />
@@ -114,7 +110,7 @@ export default function Marker({
         </>
       )}
 
-      {/* Move / Delete controls (UNCHANGED) */}
+      {/* Move / Delete controls */}
       {isSelected && (
         <div className="absolute -top-4 -left-4 flex space-x-1 z-30">
           <button
