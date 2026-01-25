@@ -22,10 +22,12 @@ interface MenuItemType {
 }
 
 function MenuOverlay({ ticketId, onClose }: { ticketId: number; onClose: () => void }) {
-  const { addItemToTicket } = useTickets();
+  const { addItemToTicket, removeItemFromTicket, getTicketById } = useTickets();
 
   const [selectedItem, setSelectedItem] = useState<MenuItemType | null>(null);
   const [quantity, setQuantity] = useState(1);
+
+  const ticket = getTicketById(ticketId);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -70,7 +72,8 @@ function MenuOverlay({ ticketId, onClose }: { ticketId: number; onClose: () => v
               ingredients={item.ingredients}
               onClick={() => {
                 setSelectedItem(item);
-                setQuantity(1);
+                const existingItem = ticket?.items.find(i => i.id === item.id.toString());
+                setQuantity(existingItem ? existingItem.quantity : 1);
               }}
             />
           ))}
@@ -82,8 +85,7 @@ function MenuOverlay({ ticketId, onClose }: { ticketId: number; onClose: () => v
 
             <div className="flex items-center gap-3">
               <button
-                onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                className="w-9 h-9 rounded-full bg-gray-200 text-xl font-bold"
+              onClick={() => setQuantity(q => Math.max(0, q - 1))}
               >
                 −
               </button>
@@ -101,14 +103,18 @@ function MenuOverlay({ ticketId, onClose }: { ticketId: number; onClose: () => v
             <button
               onClick={() => {
                 if (selectedItem) {
-                  addItemToTicket(ticketId, { id: selectedItem.id.toString(), name: selectedItem.name, price: selectedItem.price, quantity });
+                  if (quantity > 0) {
+                    addItemToTicket(ticketId, { id: selectedItem.id.toString(), name: selectedItem.name, price: selectedItem.price, quantity });
+                  } else {
+                    removeItemFromTicket(ticketId, selectedItem.id.toString());
+                  }
                   setSelectedItem(null);
                   setQuantity(1);
                 }
               }}
               className="bg-[#AF3939] text-white px-4 py-2 rounded-lg"
             >
-              Add to Order
+              {quantity > 0 ? 'Update Order' : 'Remove Item'}
             </button>
           </div>
         )}
@@ -360,7 +366,7 @@ export default function TableGrid() {
 
       {/* Menu Overlay */}
       {menuVisible && menuTicketId && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
+        <div className="fixed right-0 top-0 bottom-0 w-80 z-50">
           <div className={`relative w-full h-full bg-[#FFFDFB] overflow-hidden transition-all duration-500 ease-out ${showMenu ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'}`}>
             <MenuOverlay ticketId={menuTicketId} onClose={() => { setShowMenu(false); setTimeout(() => setMenuVisible(false), 500); }} />
           </div>

@@ -75,7 +75,15 @@
           ticket.id === ticketId
             ? {
                 ...ticket,
-                items: [...ticket.items, item],
+                items: (() => {
+                  const existingIndex = ticket.items.findIndex(i => i.id === item.id);
+                  if (existingIndex >= 0) {
+                    ticket.items[existingIndex] = { ...item };
+                  } else {
+                    ticket.items.push(item);
+                  }
+                  return ticket.items;
+                })(),
               }
             : ticket
         )
