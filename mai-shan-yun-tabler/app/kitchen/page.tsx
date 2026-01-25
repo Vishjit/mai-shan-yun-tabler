@@ -1,12 +1,16 @@
   "use client";
   import { useRouter } from "next/navigation";
   import Ticket from "../../components/ticket";
+   import Menu from "../../components/menubutton";
 
   export default function Kitchen() {
     const router = useRouter();
 
     return (
       <div className="relative w-full h-screen bg-[#FFFDFB] overflow-hidden">
+        <div className="absolute left-[5%] top-[20%] w-full  flex z-20 pointer-events-none">
+          <Menu />
+        </div>
 
         <div className="absolute left-[-18] top-[38%] w-full  flex z-20 pointer-events-none">
           <img src="/pots.svg" alt="pots" className="w-[30%] h-auto z-20" />
