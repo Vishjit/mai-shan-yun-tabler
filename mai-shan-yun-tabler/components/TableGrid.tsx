@@ -5,6 +5,10 @@ import { useRouter } from "next/navigation";
 import TableCard from "./TableCard";
 import { TableStatus } from "../lib/data";
 import Sidebar from "./sidebar";
+import Menu from "./menubutton";
+import Kitchen from "./kitchenbutton";
+import Analytics from "./analyticsbutton";
+
 
 export default function TableGrid() {
   const [selectedTable, setSelectedTable] = useState<number | null>(null);
@@ -25,10 +29,18 @@ export default function TableGrid() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Top buttons / nav */}
-      <div className="flex space-x-4 p-8 mb-12">
-        <button className="w-10 h-10 bg-rose-700 rounded-full" aria-label="Menu" />
-        <button onClick={() => router.push("/kitchen")} className="w-10 h-10 bg-rose-700 rounded-full" aria-label="Kitchen" />
-        <button className="w-10 h-10 bg-rose-700 rounded-full" aria-label="Analytics" />
+      <div className="flex space-x-4 p-8 mb-12 items-center">
+        <div onClick={() => router.push("/menu")} className="cursor-pointer width-[100%]">
+          <Menu />
+        </div>
+
+        <div onClick={() => router.push("/kitchen")} className="cursor-pointer">
+          <Kitchen />
+        </div>
+
+        <div onClick={() => router.push("/analytics")} className="cursor-pointer">
+          <Analytics />
+        </div>
       </div>
 
       {/* Main content + sidebar container */}
@@ -54,4 +66,5 @@ export default function TableGrid() {
       </div>
     </div>
   );
+  
 }

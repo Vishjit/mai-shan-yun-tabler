@@ -5,17 +5,17 @@ export default function MenuButton() {
 
   return (
     <div
-      className="relative inline-block w-[4%] z-50 cursor-pointer"
+      className="relative inline-flex flex-col items-center justify-center w-[80px] z-50 cursor-pointer font-['Jost'] text-center"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
       <img
         src={hovered ? "/menubuttonhover.svg" : "/menubutton.svg"}
         alt="menu button"
-        className="w-full h-auto block"
+        className="w-full h-auto block object-contain"
       />
-        Menu
-        
+
+      <span className="mt-2  text-sm">Menu</span>
     </div>
   );
 }

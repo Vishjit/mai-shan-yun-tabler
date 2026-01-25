@@ -1,19 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 
 export default function KitchenButton() {
+  const [hovered, setHovered] = useState(false);
+
   return (
-    <div className="relative inline-block group w-[4%] z-50 pointer-events-auto">
+    <div
+      className="relative inline-flex flex-col items-center justify-center w-[80px] z-50 cursor-pointer font-['Jost'] text-center"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
       <img
-        src="/kitchenbutton.svg"
+        src={hovered ? "/kitchenbuttonhover.svg" : "/kitchenbutton.svg"}
         alt="kitchen button"
-        className="w-full h-auto block transition-opacity duration-150 group-hover:opacity-0"
+        className="w-full h-auto block object-contain"
       />
 
-      <img
-        src="/kitchenbuttonhover.svg"
-        alt="kitchen button hover"
-        className="absolute inset-0 w-full h-full object-contain opacity-0 transition-opacity duration-150 group-hover:opacity-100"
-      />
+      <span className="mt-2  text-sm">Kitchen</span>
     </div>
   );
 }
