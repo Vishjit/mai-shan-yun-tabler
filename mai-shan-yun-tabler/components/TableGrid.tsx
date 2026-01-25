@@ -13,7 +13,6 @@ import Analytics from "./analyticsbutton";
 export default function TableGrid() {
   const [selectedTable, setSelectedTable] = useState<number | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [selectedMarker, setSelectedMarker] = useState<number | null>(null);
 
   const router = useRouter();
 
@@ -31,10 +30,10 @@ export default function TableGrid() {
     { id: 1, status: "available", type: "table", x: 120, y: 80 },
     { id: 2, status: "ordering", type: "table", x: 360, y: 80 },
     { id: 3, status: "alert", type: "table", x: 120, y: 320 },
-    // Each table comes with one marker
-    { id: 4, status: "available", type: "marker", markerNumber: 1, x: 160, y: 120 },
-    { id: 5, status: "available", type: "marker", markerNumber: 2, x: 400, y: 120 },
-    { id: 6, status: "available", type: "marker", markerNumber: 3, x: 160, y: 360 },
+    // Each table comes with one marker — start them RED
+    { id: 4, status: "alert", type: "marker", markerNumber: 1, x: 160, y: 120 },
+    { id: 5, status: "alert", type: "marker", markerNumber: 2, x: 400, y: 120 },
+    { id: 6, status: "alert", type: "marker", markerNumber: 3, x: 160, y: 360 },
   ]);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -71,8 +70,6 @@ export default function TableGrid() {
       );
     };
 
-    const markers = tableData.filter((t) => t.type === "marker");
-
     const onMouseUp = () => {
       movingIdRef.current = null;
       setMovingId(null);
@@ -80,15 +77,11 @@ export default function TableGrid() {
       window.removeEventListener("mouseup", onMouseUp);
 
       const snap = (v: number) => Math.round(v / 16) * 16;
-
-setTableData((prev) =>
-  prev.map((t) =>
-    t.id === id
-      ? { ...t, x: snap(t.x), y: snap(t.y) }
-      : t
-  )
-);
-
+      setTableData((prev) =>
+        prev.map((t) =>
+          t.id === id ? { ...t, x: snap(t.x), y: snap(t.y) } : t
+        )
+      );
     };
 
     window.addEventListener("mousemove", onMouseMove);
@@ -104,14 +97,12 @@ setTableData((prev) =>
       const nextMarkerNumber =
         Math.max(
           0,
-          ...tableData
-            .filter((t) => t.type === "marker")
-            .map((m) => m.markerNumber || 0)
+          ...tableData.filter((t) => t.type === "marker").map((m) => m.markerNumber || 0)
         ) + 1;
 
       newItem = {
         id: newId,
-        status: "available" as TableStatus,
+        status: "alert" as TableStatus, // start new markers RED
         type: "marker" as const,
         markerNumber: nextMarkerNumber,
         x: 200,
@@ -132,11 +123,38 @@ setTableData((prev) =>
     setSidebarOpen(true);
   };
 
+  // Status sequence
+  const statusSequence: TableStatus[] = ["alert", "ordering", "available"]; // RED → YELLOW → GREEN
+
+  // Forward status: RED -> YELLOW -> GREEN
+  const handleMarkerForward = (id: number) => {
+    setTableData((prev) =>
+      prev.map((item) => {
+        if (item.id !== id || item.type !== "marker") return item;
+        const currentIndex = statusSequence.indexOf(item.status);
+        const nextIndex = (currentIndex + 1) % statusSequence.length;
+        return { ...item, status: statusSequence[nextIndex] };
+      })
+    );
+  };
+
+  // Backward status: GREEN -> YELLOW -> RED
+  const handleMarkerBackward = (id: number) => {
+    setTableData((prev) =>
+      prev.map((item) => {
+        if (item.id !== id || item.type !== "marker") return item;
+        const currentIndex = statusSequence.indexOf(item.status);
+        const prevIndex = (currentIndex - 1 + statusSequence.length) % statusSequence.length;
+        return { ...item, status: statusSequence[prevIndex] };
+      })
+    );
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Top buttons / nav */}
       <div className="flex space-x-4 p-8 mb-12 items-center">
-        <div onClick={() => router.push("/menu")} className="cursor-pointer width-[100%]">
+        <div onClick={() => router.push("/menu")} className="cursor-pointer">
           <Menu />
         </div>
         <div onClick={() => router.push("/kitchen")} className="cursor-pointer">
@@ -158,13 +176,12 @@ setTableData((prev) =>
         >
           {tableData.map((item) => (
             <div
-  key={item.id}
-  className="absolute transition-transform duration-150 ease-out"
-  style={{
-    transform: `translate(${item.x}px, ${item.y}px)`,
-  }}
->
-
+              key={item.id}
+              className="absolute transition-transform duration-150 ease-out"
+              style={{
+                transform: `translate(${item.x}px, ${item.y}px)`,
+              }}
+            >
               {item.type === "table" ? (
                 <TableCard
                   id={item.id}
@@ -192,6 +209,8 @@ setTableData((prev) =>
                   onDelete={(id) =>
                     setTableData((prev) => prev.filter((t) => t.id !== id))
                   }
+                  onStatusForward={handleMarkerForward}
+                  onStatusBackward={handleMarkerBackward}
                 />
               )}
             </div>
