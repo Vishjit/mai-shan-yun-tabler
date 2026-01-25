@@ -1,19 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 
-export default function Menubutton() {
+export default function MenuButton() {
+  const [hovered, setHovered] = useState(false);
+
   return (
-    <div className="relative inline-block group w-[5%]">
+    <div
+      className="relative inline-block w-[4%] z-50 cursor-pointer"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
       <img
-        src="/menubutton.svg"
-        alt="menubutton"
-        className="w-full h-auto block transition-opacity duration-150 group-hover:opacity-0"
+        src={hovered ? "/menubuttonhover.svg" : "/menubutton.svg"}
+        alt="menu button"
+        className="w-full h-auto block"
       />
-
-      <img
-        src="/menubuttonhover.svg"
-        alt="menubuttonhover"
-        className="absolute top-0 left-0 w-full h-full object-contain opacity-0 transition-opacity duration-150 group-hover:opacity-100"
-      />
+        Menu
+        
     </div>
   );
 }
