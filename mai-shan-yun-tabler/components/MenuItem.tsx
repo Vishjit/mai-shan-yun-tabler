@@ -17,7 +17,7 @@ export default function MenuItem({
   return (
     <div
       onClick={onClick}
-      className="cursor-pointer bg-white rounded-2xl shadow-md p-4 hover:scale-[1.02] transition"
+      className="relative z-30 cursor-pointer bg-white rounded-2xl shadow-md p-4 border-2 border-[#3D3D3D] hover:border-[#AF3939] active:border-[#AF3939] hover:scale-[1.02] hover:z-40 transition"
     >
       <div className="flex justify-between items-center">
         <h3 className="text-xl font-semibold">{name}</h3>
