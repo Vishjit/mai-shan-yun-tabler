@@ -14,6 +14,9 @@
     "react-dom": "19.2.3",
     "react-icons": "^5.5.0"
   },
+  "optionalDependencies": {
+    "html2canvas": "^1.4.1"
+  },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
@@ -21,6 +24,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.4",
+    "puppeteer": "^24.36.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

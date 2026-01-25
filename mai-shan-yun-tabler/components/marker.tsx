@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  RiFilePaper2Line,
-  RiArrowLeftSLine,
-  RiArrowRightSLine,
-} from "react-icons/ri";
+
 import { TableStatus } from "../lib/data";
 
 interface MarkerProps {
@@ -16,6 +12,8 @@ interface MarkerProps {
   onMoveToggle?: (id: number) => void;
   onCardMouseDown?: (e: React.MouseEvent, id: number) => void;
   onDelete?: (id: number) => void;
+  onDoubleClick?: (id: number) => void;
+  showControls?: boolean;
 
   // NEW
   onStatusForward?: (id: number) => void;
@@ -34,6 +32,8 @@ export default function Marker({
   onDelete,
   onStatusForward,
   onStatusBackward,
+  onDoubleClick,
+  showControls,
 }: MarkerProps) {
   const statusBg = {
     available: "bg-green-300",
@@ -44,6 +44,7 @@ export default function Marker({
   return (
     <div
       onClick={onClick}
+      onDoubleClick={(e) => { e.stopPropagation(); onDoubleClick?.(id); }}
       onMouseDown={(e) => {
         e.stopPropagation();
         onCardMouseDown?.(e, id);
@@ -65,7 +66,7 @@ export default function Marker({
           ${isSelected ? "scale-110 shadow-md" : ""}
         `}
       >
-        <RiFilePaper2Line className="w-7 h-7 text-[#57321F]" />
+    
       </div>
 
       {/* Marker number */}
@@ -91,7 +92,7 @@ export default function Marker({
               transition
             "
           >
-            <RiArrowLeftSLine className="w-4 h-4" />
+           
           </button>
 
           {/* Forward */}
@@ -109,13 +110,13 @@ export default function Marker({
               transition
             "
           >
-            <RiArrowRightSLine className="w-4 h-4" />
+           
           </button>
         </>
       )}
 
       {/* Move / Delete controls (UNCHANGED) */}
-      {isSelected && (
+      {isSelected && (showControls ?? true) && (
         <div className="absolute -top-4 -left-4 flex space-x-1 z-30">
           <button
             onClick={(e) => {

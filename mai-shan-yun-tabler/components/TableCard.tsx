@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { TableStatus } from "../lib/data";
-import { RiFilePaper2Line } from "react-icons/ri";
+
 
 interface TableCardProps {
   id: number;
@@ -12,6 +12,8 @@ interface TableCardProps {
   onMoveToggle?: (id: number) => void;
   onCardMouseDown?: (e: React.MouseEvent, id: number) => void;
   onDelete?: (id: number) => void;
+  onDoubleClick?: (id: number) => void;
+  showControls?: boolean;
 }
 
 export default function TableCard({
@@ -24,6 +26,8 @@ export default function TableCard({
   onMoveToggle,
   onCardMouseDown,
   onDelete,
+  onDoubleClick,
+  showControls,
 }: TableCardProps) {
   const [moveHover, setMoveHover] = useState(false);
   const [movePressed, setMovePressed] = useState(false);
@@ -33,6 +37,7 @@ export default function TableCard({
   return (
     <div
       onClick={onClick}
+      onDoubleClick={(e) => { e.stopPropagation(); onDoubleClick?.(id); }}
       onMouseDown={(e) => {
         e.stopPropagation();
         onCardMouseDown?.(e, id);
@@ -45,7 +50,7 @@ export default function TableCard({
       `}
     >
       {/* Controls */}
-      {isSelected && (
+      {isSelected && (showControls ?? true) && (
         <div className="absolute -top-4 -left-4 flex space-x-1 z-30">
           <button
             onMouseEnter={() => setMoveHover(true)}
@@ -114,7 +119,11 @@ export default function TableCard({
             className="w-full h-full object-contain"
           />
         ) : (
-          <RiFilePaper2Line className="w-14 h-14 text-[#57321F]" />
+          <img
+            src="/marker.svg"
+            alt={`Marker ${id}`}
+            className="w-full h-full object-contain"
+          />
         )}
       </div>
     </div>
