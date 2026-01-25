@@ -4,6 +4,7 @@ interface MenuItemProps {
   name: string;
   price: number;
   ingredients?: string;
+  description?: string;
   onClick?: () => void;
 }
 

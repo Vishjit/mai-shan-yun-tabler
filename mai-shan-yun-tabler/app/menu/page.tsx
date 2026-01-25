@@ -68,20 +68,91 @@ export default function Menu() {
         className="absolute z-10 right-[3%] top-[10%] w-[160px] h-auto object-contain anim-cloud-long"
       />
 
-      {/* MENU ITEMS */}
-      <div className="grid grid-cols-4 gap-6 mt-56 px-16">
-        {menuItems.map(item => (
-          <MenuItem
-            key={item.id}
-            name={item.name}
-            price={item.price}
-            ingredients={item.ingredients}
-            onClick={() => {
-              setSelectedItem(item);
-              setQuantity(1);
-            }}
-          />
-        ))}
+      {/* MENU ITEMS - GROUPED BY CATEGORY */}
+      <div className="mt-56 px-16 pb-16 overflow-y-auto h-[calc(100vh-200px)]">
+        {/* Appetizers */}
+        {menuItems.filter(item => item.description === "Appetizer").length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold mb-4 text-[#57321F]">Appetizers</h2>
+            <div className="grid grid-cols-4 gap-6">
+              {menuItems.filter(item => item.description === "Appetizer").map(item => (
+                <MenuItem
+                  key={item.id}
+                  name={item.name}
+                  price={item.price}
+                  ingredients={item.ingredients}
+                  onClick={() => {
+                    setSelectedItem(item);
+                    setQuantity(1);
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Entrees */}
+        {menuItems.filter(item => item.description === "Entree").length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold mb-4 text-[#57321F]">Entrees</h2>
+            <div className="grid grid-cols-4 gap-6">
+              {menuItems.filter(item => item.description === "Entree").map(item => (
+                <MenuItem
+                  key={item.id}
+                  name={item.name}
+                  price={item.price}
+                  ingredients={item.ingredients}
+                  onClick={() => {
+                    setSelectedItem(item);
+                    setQuantity(1);
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Desserts */}
+        {menuItems.filter(item => item.description === "Dessert").length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold mb-4 text-[#57321F]">Desserts</h2>
+            <div className="grid grid-cols-4 gap-6">
+              {menuItems.filter(item => item.description === "Dessert").map(item => (
+                <MenuItem
+                  key={item.id}
+                  name={item.name}
+                  price={item.price}
+                  ingredients={item.ingredients}
+                  onClick={() => {
+                    setSelectedItem(item);
+                    setQuantity(1);
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Allergies & Restrictions */}
+        {menuItems.filter(item => item.description === "Special Diet").length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold mb-4 text-[#57321F]">Allergies & Restrictions</h2>
+            <div className="grid grid-cols-4 gap-6">
+              {menuItems.filter(item => item.description === "Special Diet").map(item => (
+                <MenuItem
+                  key={item.id}
+                  name={item.name}
+                  price={item.price}
+                  ingredients={item.ingredients}
+                  onClick={() => {
+                    setSelectedItem(item);
+                    setQuantity(1);
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* CURRENT ORDER */}
