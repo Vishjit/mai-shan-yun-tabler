@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import TableCard from "./TableCard";
 import { TableStatus } from "../lib/data";
@@ -15,15 +15,48 @@ export default function TableGrid() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const router = useRouter();
 
-  const tableData: { id: number; status: TableStatus }[] = [
-    { id: 1, status: "available" },
-    { id: 2, status: "ordering" },
-    { id: 3, status: "alert" },
-  ];
+  const [tableData, setTableData] = useState<{ id: number; status: TableStatus; x: number; y: number }[]>([
+    { id: 1, status: "available", x: 120, y: 80 },
+    { id: 2, status: "ordering", x: 360, y: 80 },
+    { id: 3, status: "alert", x: 120, y: 320 },
+  ]);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const movingIdRef = useRef<number | null>(null);
+  const [movingId, setMovingId] = useState<number | null>(null);
 
   const handleTableClick = (id: number) => {
     setSelectedTable(id);
     setSidebarOpen(true);
+  };
+
+  const handleMoveToggle = (id: number) => {
+    setMovingId((prev) => (prev === id ? null : id));
+  };
+
+  const handleCardMouseDown = (e: React.MouseEvent, id: number) => {
+    // if move mode is active for this id, start dragging
+    if (movingId !== id) return;
+    e.preventDefault();
+    movingIdRef.current = id;
+
+    const onMouseMove = (ev: MouseEvent) => {
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      const cardHalf = 96; // half of 192px (w-48)
+      const x = ev.clientX - rect.left - cardHalf;
+      const y = ev.clientY - rect.top - cardHalf;
+      setTableData((prev) => prev.map((t) => (t.id === id ? { ...t, x: Math.max(0, x), y: Math.max(0, y) } : t)));
+    };
+
+    const onMouseUp = () => {
+      movingIdRef.current = null;
+      setMovingId(null);
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
   };
 
   return (
@@ -47,17 +80,27 @@ export default function TableGrid() {
       <div className="flex flex-1 transition-all duration-300">
         {/* Table grid */}
         <div
-          className={`flex justify-center items-start gap-12 flex-wrap p-8 flex-1 transition-all duration-300`}
+          ref={containerRef}
+          onMouseDown={() => setMovingId(null)}
+          className={`relative flex-1 p-8 transition-all duration-300`}
           style={{ marginRight: sidebarOpen ? "30%" : "0" }}
         >
           {tableData.map((table) => (
-            <TableCard
+            <div
               key={table.id}
-              id={table.id}
-              status={table.status}
-              isSelected={selectedTable === table.id}
-              onClick={() => handleTableClick(table.id)}
-            />
+              style={{ position: "absolute", left: table.x, top: table.y }}
+            >
+              <TableCard
+                id={table.id}
+                status={table.status}
+                isSelected={selectedTable === table.id}
+                isMoving={movingId === table.id}
+                onClick={() => handleTableClick(table.id)}
+                onMoveToggle={handleMoveToggle}
+                onCardMouseDown={handleCardMouseDown}
+                onDelete={(id) => setTableData((prev) => prev.filter((t) => t.id !== id))}
+              />
+            </div>
           ))}
         </div>
 
