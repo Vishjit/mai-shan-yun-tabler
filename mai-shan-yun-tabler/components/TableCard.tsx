@@ -76,7 +76,7 @@ export default function TableCard({ id, status, isSelected, isMoving, onClick, o
       />
 
       {/* Table SVG */}
-      <img src="/table.svg" alt={`Table ${id}`} className="w-full h-full object-contain" />
+      <img src="/table panel.svg" alt={`Table ${id}`} className="w-full h-full object-contain" />
     </div>
   );
 }
