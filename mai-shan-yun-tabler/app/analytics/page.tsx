@@ -1,6 +1,9 @@
 "use client";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import TableButton from "@/components/tablesbutton";
+import MenuButton from "../../components/menubutton";
+import Kitchenbutton from "@/components/kitchenbutton";
 
 export default function Analytics() {
   const router = useRouter();
@@ -53,6 +56,18 @@ export default function Analytics() {
 
   return (
     <div className="relative w-full min-h-screen bg-[#FFFDFB] overflow-hidden">
+       {/* Top buttons / nav */}
+                          <div className="flex space-x-3 p-4 mb-6 items-center">
+                            <div onClick={() => router.push("/menu")} className="cursor-pointer">
+                              <MenuButton />
+                            </div>
+                            <div onClick={() => router.push("/tables")} className="cursor-pointer">
+                              <TableButton />
+                            </div>
+                            <div onClick={() => router.push("/kitchen")} className="cursor-pointer">
+                              <Kitchenbutton />
+                            </div>
+                          </div>
 
        {/* Clouds*/}
       <img src="/cloud (8).svg" alt="cloud" className="absolute z-10 left-[20%] top-[20%] w-[7%] h-auto object-contain anim-cloud" />

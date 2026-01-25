@@ -10,7 +10,7 @@ export default function TableButton() {
       onMouseLeave={() => setHovered(false)}
     >
       <img
-        src={hovered ? "/tablesbuttonhover.svg" : "/tablesbutton.svg"}
+        src={hovered ? "/tableshover.svg" : "/tablesbutton.svg"}
         alt="table button"
         className="w-full h-auto block object-contain"
       />

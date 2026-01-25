@@ -1,16 +1,30 @@
     "use client";
     import { useRouter } from "next/navigation";
     import Ticket from "../../components/ticket";
-    import Menu from "../../components/menubutton";
+    import Menu from "../../components/menubutton"; 
+    import Kitchenbutton from "@/components/kitchenbutton";
+  import Analytics from "@/components/analyticsbutton";
+import TableButton from "@/components/tablesbutton";
+import MenuButton from "../../components/menubutton";
+
 
     export default function Kitchen() {
       const router = useRouter();
 
       return (
         <div className="relative w-full h-screen bg-[#FFFDFB] overflow-hidden">
-          <div className="absolute left-[2%] top-[5%] w-full  flex z-20">
-            <Menu />
-          </div>
+           {/* Top buttons / nav */}
+                    <div className="flex space-x-3 p-4 mb-6 items-center">
+                      <div onClick={() => router.push("/menu")} className="cursor-pointer">
+                        <MenuButton />
+                      </div>
+                      <div onClick={() => router.push("/tables")} className="cursor-pointer">
+                        <TableButton />
+                      </div>
+                      <div onClick={() => router.push("/analytics")} className="cursor-pointer">
+                        <Analytics />
+                      </div>
+                    </div>
 
         <div style={{ position: "absolute", top: 0, right: 120, display: "flex", gap:120, zIndex: 20 }}>
                     <div style={{ width: 110 }}>
