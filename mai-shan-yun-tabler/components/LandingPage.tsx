@@ -9,7 +9,7 @@
        
         {/* Click to get started*/}
         <button
-          onClick={() => router.push("/dashboard")}
+          onClick={() => router.push("/tables")}
           aria-label="Get started"
           className="absolute left-1/2 bottom-[78px] transform -translate-x-1/2 bg-[#AF3939] text-white text-[17px] md:text-[18px] px-5 py-2 md:px-10 md:py-5 rounded-[22px] font-['Jost'] font-bold leading-[20px] shadow-md z-30 transition-colors duration-200 ease-in-out border-4 border-transparent hover:bg-white hover:text-[#AF3939] hover:border-[#AF3939]"
         >
