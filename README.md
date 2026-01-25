@@ -1,5 +1,5 @@
-# mai shan yun tabler 🪑🍜
-A customized point of sale tabling and order management app for Mai Shan Yun, College Station. This was made in 24 hours during TamuHack 2026🍉. 
+#Mai-POS 🪑🍜
+A customized point of sale tabling and order management app developed for Mai Shan Yun, College Station. This was made in 24 hours during TamuHack 2026🍉. 
 
 ## Features
 
@@ -15,7 +15,7 @@ A customized point of sale tabling and order management app for Mai Shan Yun, Co
     - Automatically generates new tickets for the kitchen when orders are updated
 
 - **📍 Markers with Status**
-  - Markers have status states: `alert (red)` → `ordering (yellow)` → `available (green)`.
+  - Markers have status states: `Waiting for Service (red)` → `Waiting for Food (yellow)` → `Eating (green)`.
   - Forward/backward cycling of status.
 
 - **💾 Saved Layouts**
