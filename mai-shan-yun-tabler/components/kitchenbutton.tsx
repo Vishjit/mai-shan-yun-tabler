@@ -15,7 +15,7 @@ export default function KitchenButton() {
         className="w-full h-auto block object-contain"
       />
 
-      <span className="mt-2  text-sm">Kitchen</span>
+      <span className="mt-2 text-sm">Kitchen</span>
     </div>
   );
 }
