@@ -78,6 +78,17 @@ export default function TableGrid() {
       setMovingId(null);
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mouseup", onMouseUp);
+
+      const snap = (v: number) => Math.round(v / 16) * 16;
+
+setTableData((prev) =>
+  prev.map((t) =>
+    t.id === id
+      ? { ...t, x: snap(t.x), y: snap(t.y) }
+      : t
+  )
+);
+
     };
 
     window.addEventListener("mousemove", onMouseMove);
@@ -146,7 +157,14 @@ export default function TableGrid() {
           style={{ marginRight: sidebarOpen ? "30%" : "0" }}
         >
           {tableData.map((item) => (
-            <div key={item.id} style={{ position: "absolute", left: item.x, top: item.y }}>
+            <div
+  key={item.id}
+  className="absolute transition-transform duration-150 ease-out"
+  style={{
+    transform: `translate(${item.x}px, ${item.y}px)`,
+  }}
+>
+
               {item.type === "table" ? (
                 <TableCard
                   id={item.id}

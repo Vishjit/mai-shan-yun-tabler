@@ -1,6 +1,10 @@
 import React from "react";
+import {
+  RiFilePaper2Line,
+  RiArrowLeftSLine,
+  RiArrowRightSLine,
+} from "react-icons/ri";
 import { TableStatus } from "../lib/data";
-import { RiFilePaper2Line } from "react-icons/ri";
 
 interface MarkerProps {
   id: number;
@@ -12,6 +16,10 @@ interface MarkerProps {
   onMoveToggle?: (id: number) => void;
   onCardMouseDown?: (e: React.MouseEvent, id: number) => void;
   onDelete?: (id: number) => void;
+
+  // NEW
+  onStatusForward?: (id: number) => void;
+  onStatusBackward?: (id: number) => void;
 }
 
 export default function Marker({
@@ -24,53 +32,107 @@ export default function Marker({
   onMoveToggle,
   onCardMouseDown,
   onDelete,
+  onStatusForward,
+  onStatusBackward,
 }: MarkerProps) {
-  const statusColor = {
-    available: "bg-green-500",
-    ordering: "bg-amber-400",
-    alert: "bg-red-500",
+  const statusBg = {
+    available: "bg-green-300",
+    ordering: "bg-amber-300",
+    alert: "bg-red-300",
   };
 
   return (
     <div
-      className={`relative cursor-pointer w-48 h-48 flex-shrink-0 flex items-center justify-center`}
       onClick={onClick}
-      onMouseDown={(e) => { e.stopPropagation(); onCardMouseDown && onCardMouseDown(e, id); }}
-      style={{
-        border: isMoving ? "6px solid #AF3939" : isSelected ? "4px solid #3B82F6" : "2px solid transparent",
-        boxSizing: "border-box",
+      onMouseDown={(e) => {
+        e.stopPropagation();
+        onCardMouseDown?.(e, id);
       }}
+      className={`
+        relative w-24 h-24 flex items-center justify-center
+        cursor-grab active:cursor-grabbing
+        transition-all duration-200 ease-out
+        ${isMoving ? "scale-110 z-50" : ""}
+      `}
     >
-      {/* Status indicator */}
+      {/* Marker bubble */}
       <div
-        className={`w-3 h-3 rounded-full ${statusColor[status]} absolute top-2 right-2`}
-        aria-label={`Marker ${markerNumber} status: ${status}`}
-      />
-
-      {/* Marker icon */}
-      <RiFilePaper2Line className="w-12 h-12 text-gray-700" />
+        className={`
+          ${statusBg[status]}
+          w-14 h-14 rounded-full
+          flex items-center justify-center
+          transition-transform duration-200
+          ${isSelected ? "scale-110 shadow-md" : ""}
+        `}
+      >
+        <RiFilePaper2Line className="w-7 h-7 text-[#57321F]" />
+      </div>
 
       {/* Marker number */}
-      <div className="absolute -bottom-3 text-sm font-bold text-gray-800">
+      <div className="absolute -bottom-3 text-xs font-semibold text-gray-700">
         #{markerNumber}
       </div>
 
-      {/* Optional move/delete controls */}
+      {/* Status arrows (ONLY visual, no layout impact) */}
       {isSelected && (
-        <div className="absolute -top-5 -left-4 flex space-x-1 z-30">
+        <>
+          {/* Backward */}
           <button
-            onClick={(e) => { e.stopPropagation(); onMoveToggle && onMoveToggle(id); }}
-            title="Move marker"
-            className="w-8 h-8 rounded-full flex items-center justify-center"
+            onClick={(e) => {
+              e.stopPropagation();
+              onStatusBackward?.(id);
+            }}
+            title="Previous status"
+            className="
+              absolute left-2 top-2
+              text-[#57321F]/50
+              hover:text-[#57321F]
+              hover:scale-110
+              transition
+            "
           >
-            <img src="/move button.svg" alt="move" className="w-8 h-8" />
+            <RiArrowLeftSLine className="w-4 h-4" />
           </button>
+
+          {/* Forward */}
           <button
-            onClick={(e) => { e.stopPropagation(); onDelete && onDelete(id); }}
-            title="Delete marker"
-            className="w-8 h-8 rounded-full flex items-center justify-center"
+            onClick={(e) => {
+              e.stopPropagation();
+              onStatusForward?.(id);
+            }}
+            title="Next status"
+            className="
+              absolute right-2 top-2
+              text-[#57321F]/50
+              hover:text-[#57321F]
+              hover:scale-110
+              transition
+            "
           >
-            <img src="/trash button.svg" alt="delete" className="w-8 h-8" />
+            <RiArrowRightSLine className="w-4 h-4" />
+          </button>
+        </>
+      )}
+
+      {/* Move / Delete controls (UNCHANGED) */}
+      {isSelected && (
+        <div className="absolute -top-4 -left-4 flex space-x-1 z-30">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onMoveToggle?.(id);
+            }}
+          >
+            <img src="/move button.svg" alt="move" className="w-7 h-7" />
+          </button>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete?.(id);
+            }}
+          >
+            <img src="/trash button.svg" alt="delete" className="w-7 h-7" />
           </button>
         </div>
       )}

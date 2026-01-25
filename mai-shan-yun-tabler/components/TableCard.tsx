@@ -30,28 +30,23 @@ export default function TableCard({
   const [trashHover, setTrashHover] = useState(false);
   const [trashPressed, setTrashPressed] = useState(false);
 
-  const statusColor = {
-    available: "bg-green-500",
-    ordering: "bg-amber-400",
-    alert: "bg-red-500",
-  };
-
   return (
     <div
-      className={`relative cursor-pointer w-48 h-48 flex-shrink-0 bg-transparent`}
       onClick={onClick}
       onMouseDown={(e) => {
         e.stopPropagation();
-        onCardMouseDown && onCardMouseDown(e, id);
+        onCardMouseDown?.(e, id);
       }}
-      style={{
-        border: isMoving ? "6px solid #AF3939" : "2px solid transparent",
-        boxSizing: "border-box",
-      }}
+      className={`
+        relative w-40 h-40
+        transition-all duration-200 ease-out
+        ${isMoving ? "scale-105 z-50" : ""}
+        cursor-grab active:cursor-grabbing
+      `}
     >
-      {/* Controls move + delete shown when selected */}
+      {/* Controls */}
       {isSelected && (
-        <div className="absolute -top-5 -left-4 flex space-x-1 z-30">
+        <div className="absolute -top-4 -left-4 flex space-x-1 z-30">
           <button
             onMouseEnter={() => setMoveHover(true)}
             onMouseLeave={() => {
@@ -65,21 +60,17 @@ export default function TableCard({
             onMouseUp={(e) => {
               e.stopPropagation();
               setMovePressed(false);
-              onMoveToggle && onMoveToggle(id);
+              onMoveToggle?.(id);
             }}
-            title="Move layout"
-            className={`w-8 h-8 rounded-full flex items-center justify-center`}
           >
             <img
               src={
-                movePressed
-                  ? "/move button hover.svg"
-                  : moveHover
+                movePressed || moveHover
                   ? "/move button hover.svg"
                   : "/move button.svg"
               }
               alt="move"
-              className="w-8 h-8"
+              className="w-7 h-7"
             />
           </button>
 
@@ -96,10 +87,8 @@ export default function TableCard({
             onMouseUp={(e) => {
               e.stopPropagation();
               setTrashPressed(false);
-              onDelete && onDelete(id);
+              onDelete?.(id);
             }}
-            title="Delete layout"
-            className="w-8 h-8 rounded-full flex items-center justify-center"
           >
             <img
               src={
@@ -110,24 +99,22 @@ export default function TableCard({
                   : "/trash button.svg"
               }
               alt="delete"
-              className="w-8 h-8 "
+              className="w-7 h-7"
             />
           </button>
         </div>
       )}
 
-      {/* Status indicator */}
-      <div
-        className={`w-3 h-3 rounded-full ${statusColor[status]} absolute top-2 right-2`}
-        aria-label={`Table ${id} status: ${status}`}
-      />
-
-      {/* Table or Marker */}
+      {/* Table visual (no status color here) */}
       <div className="w-full h-full flex items-center justify-center">
         {type === "table" ? (
-          <img src="/table.svg" alt={`Table ${id}`} className="w-full h-full object-contain" />
+          <img
+            src="/table.svg"
+            alt={`Table ${id}`}
+            className="w-full h-full object-contain"
+          />
         ) : (
-          <RiFilePaper2Line className="w-16 h-16 text-[#57321F]" />
+          <RiFilePaper2Line className="w-14 h-14 text-[#57321F]" />
         )}
       </div>
     </div>
