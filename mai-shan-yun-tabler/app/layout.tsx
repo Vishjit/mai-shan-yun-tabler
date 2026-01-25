@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Jost, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { TicketProvider } from "@/context/ticketContext";
 
 const geistSans = Jost({
   variable: "--font-jost",
@@ -21,15 +22,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        {/* Wrap everything in TicketProvider */}
+        <TicketProvider>{children}</TicketProvider>
       </body>
     </html>
   );
