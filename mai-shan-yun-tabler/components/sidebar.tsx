@@ -20,6 +20,11 @@ interface SidebarProps {
   selectedMarker: number | null;
   setSelectedMarker: (id: number | null) => void;
   onUpdateOrder: (ticketId: number) => void;
+  onSaveLayout?: () => void;
+  savedLayouts?: { id: number; name: string; thumbnail?: string }[];
+  onLoadLayout?: (id: number) => void;
+  onDuplicateLayout?: (id: number) => void;
+  onDeleteLayout?: (id: number) => void;
 }
 
 export default function Sidebar({
@@ -30,6 +35,11 @@ export default function Sidebar({
   selectedMarker,
   setSelectedMarker,
   onUpdateOrder,
+  onSaveLayout,
+  savedLayouts = [],
+  onLoadLayout,
+  onDuplicateLayout,
+  onDeleteLayout,
 }: SidebarProps) {
   const [activeTab, setActiveTab] = useState<"layout" | "orders">("layout");
   const { getReceiptForTicket } = useTickets();
@@ -82,25 +92,60 @@ export default function Sidebar({
 
         {/* ================= LAYOUT TAB ================= */}
         {activeTab === "layout" && (
-          <div className="grid grid-cols-2 gap-4">
-            <div
-              className="cursor-pointer"
-              onClick={() => onAddItem("table")}
-            >
-              <div className="bg-white rounded-xl p-4 flex justify-center">
-                <Image src="/table.svg" alt="table" width={64} height={64} />
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div
+                className="cursor-pointer"
+                onClick={() => onAddItem("table")}
+              >
+                <div className="bg-white rounded-xl p-4 flex justify-center">
+                  <Image src="/table.svg" alt="table" width={64} height={64} />
+                </div>
+                <div className="text-center mt-2">Table</div>
               </div>
-              <div className="text-center mt-2">Table</div>
+
+              <div
+                className="cursor-pointer"
+                onClick={() => onAddItem("marker")}
+              >
+                <div className="bg-white rounded-xl p-4 flex justify-center">
+                  <RiFilePaper2Line className="w-8 h-8 text-[#57321F]" />
+                </div>
+                <div className="text-center mt-2">Marker</div>
+              </div>
             </div>
 
-            <div
-              className="cursor-pointer"
-              onClick={() => onAddItem("marker")}
-            >
-              <div className="bg-white rounded-xl p-4 flex justify-center">
-                <RiFilePaper2Line className="w-8 h-8 text-[#57321F]" />
+            {/* Saved layouts */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <div className="font-semibold">Saved layouts</div>
+                <button
+                  onClick={() => onSaveLayout && onSaveLayout()}
+                  className="text-sm bg-[#AF3939] text-white px-3 py-1 rounded"
+                >
+                  Save
+                </button>
               </div>
-              <div className="text-center mt-2">Marker</div>
+
+              <div className="space-y-2 max-h-48 overflow-y-auto">
+                {savedLayouts && savedLayouts.length ? (
+                  savedLayouts.map((s) => (
+                    <div key={s.id} className="flex items-center gap-2 bg-white p-2 rounded shadow">
+                      <img src={s.thumbnail || "/table.svg"} alt={s.name} className="w-16 h-10 object-cover rounded" />
+                      <div className="flex-1 text-sm">
+                        <div className="font-medium">{s.name}</div>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <button onClick={() => onLoadLayout && onLoadLayout(s.id)} className="text-xs px-2 py-1 bg-[#F3F1EE] rounded">Load</button>
+                        <button onClick={() => onDuplicateLayout && onDuplicateLayout(s.id)} className="text-xs px-2 py-1 bg-[#F3F1EE] rounded">Dup</button>
+                        <button onClick={() => onDeleteLayout && onDeleteLayout(s.id)} className="text-xs px-2 py-1 bg-[#F3F1EE] rounded">Del</button>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-sm text-gray-600">No saved layouts</div>
+                )}
+              </div>
             </div>
           </div>
         )}
