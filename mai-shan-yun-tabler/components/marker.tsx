@@ -51,7 +51,7 @@ export default function Marker({
       className={`
         relative w-24 h-24 flex items-center justify-center
         cursor-grab active:cursor-grabbing
-        transition-all duration-200 ease-out
+        transition-all duration-200 ease-[cubic-bezier(.22,1,.36,1)]
         ${isMoving ? "scale-110 z-50" : ""}
       `}
     >
@@ -67,7 +67,7 @@ export default function Marker({
       >
         <RiFilePaper2Line className="w-7 h-7 text-[#57321F]" />
       </div>
-
+            
       {/* Marker number */}
       <div className="absolute -bottom-3 text-xs font-semibold text-gray-700">
         #{markerNumber}
@@ -102,7 +102,7 @@ export default function Marker({
             className="
               absolute right-[-10px] top-1/2 transform -translate-y-1/2
               text-[#57321F]/50 hover:text-[#57321F]
-              hover:scale-110 transition
+              hover:scale-110 transition 
             "
           >
             <RiArrowRightSLine className="w-4 h-4" />

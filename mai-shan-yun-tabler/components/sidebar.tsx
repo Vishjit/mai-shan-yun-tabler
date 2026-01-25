@@ -2,8 +2,9 @@
 
 import React, { useState } from "react";
 import { RiFilePaper2Line } from "react-icons/ri";
-import Image from 'next/image';
+import Image from "next/image";
 import { TableStatus } from "../lib/data";
+import { useTickets } from "../context/ticketContext";
 
 interface MarkerData {
   id: number;
@@ -15,11 +16,10 @@ interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
   onAddItem: (type: "table" | "marker") => void;
-
-  // NEW
   markers: MarkerData[];
   selectedMarker: number | null;
   setSelectedMarker: (id: number | null) => void;
+  onUpdateOrder: (ticketId: number) => void;
 }
 
 export default function Sidebar({
@@ -29,13 +29,15 @@ export default function Sidebar({
   markers,
   selectedMarker,
   setSelectedMarker,
+  onUpdateOrder,
 }: SidebarProps) {
   const [activeTab, setActiveTab] = useState<"layout" | "orders">("layout");
+  const { getReceiptForTicket } = useTickets();
 
   const statusLabel: Record<TableStatus, string> = {
-    available: "Empty",
-    ordering: "Eating",
-    alert: "Waiting for Bill",
+    available: "Eating",
+    ordering: "Waiting for Food",
+    alert: "Waiting for Service",
   };
 
   return (
@@ -45,7 +47,6 @@ export default function Sidebar({
       ${isOpen ? "translate-x-0" : "translate-x-full"} z-40`}
     >
       <div className="p-4 flex flex-col flex-1 overflow-y-auto">
-
         {/* Tabs */}
         <div className="mb-6">
           <div className="relative bg-white rounded-full p-0.5">
@@ -120,7 +121,7 @@ export default function Sidebar({
                     ${isOpen ? "bg-white p-4 shadow" : "bg-[#FFFDFB] p-3"}
                   `}
                 >
-                  {/* Header (always visible) */}
+                  {/* Header */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <RiFilePaper2Line className="w-5 h-5" />
@@ -133,16 +134,33 @@ export default function Sidebar({
                     </span>
                   </div>
 
-                  {/* Expanded content */}
-                  {isOpen && (
-                    <div className="mt-3 space-y-2 text-sm text-gray-700">
-                      <div>• Spicy Cucumber Salad ×1</div>
-                      <div>• Fried Rice ×2</div>
-                      <button className="mt-2 w-full bg-[#AF3939] text-white py-1 rounded-lg">
+                  {/* Animated expanded content */}
+                  <div
+                    className={`overflow-hidden transition-all duration-300 ${
+                      isOpen ? "max-h-96 opacity-100 mt-3" : "max-h-0 opacity-0"
+                    }`}
+                  >
+                    <div className="space-y-2 text-sm text-gray-700">
+                      {(() => {
+                        const receipt = getReceiptForTicket(marker.id);
+                        if (receipt && receipt.lines.length > 0) {
+                          return (
+                            <>
+                              {receipt.lines.map((line, index) => (
+                                <div key={index}>• {line.name} ×{line.quantity} - ${line.lineTotal.toFixed(2)}</div>
+                              ))}
+                              <div className="font-semibold">Total: ${receipt.subtotal.toFixed(2)}</div>
+                            </>
+                          );
+                        } else {
+                          return <div>No items yet</div>;
+                        }
+                      })()}
+                      <button className="mt-2 w-full bg-[#AF3939] text-white py-1 rounded-lg" onClick={() => onUpdateOrder(marker.id)}>
                         Update Order
                       </button>
                     </div>
-                  )}
+                  </div>
                 </div>
               );
             })}

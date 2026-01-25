@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import TableCard from "./TableCard";
 import Marker from "./marker";
@@ -9,12 +9,124 @@ import Sidebar from "./sidebar";
 import Menu from "./menubutton";
 import Kitchen from "./kitchenbutton";
 import Analytics from "./analyticsbutton";
+import { useTickets } from "../context/ticketContext";
+import { menuItems } from "../lib/menu";
+import MenuItem from "./MenuItem";
+import Image from "next/image";
+
+interface MenuItemType {
+  id: number;
+  name: string;
+  price: number;
+  ingredients: string;
+}
+
+function MenuOverlay({ ticketId, onClose }: { ticketId: number; onClose: () => void }) {
+  const { addItemToTicket } = useTickets();
+
+  const [selectedItem, setSelectedItem] = useState<MenuItemType | null>(null);
+  const [quantity, setQuantity] = useState(1);
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="relative w-full h-full bg-[#FFFDFB] overflow-hidden">
+        
+        {/* Back Button */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 left-4 w-10 h-10 rounded-full bg-[#AF3939] text-white flex items-center justify-center text-xl font-bold z-50"
+        >
+          ←
+        </button>
+
+        {/* Title */}
+        <div className="absolute top-[10%] justify-center w-full text-[60px] font-['Jost'] font-bold flex pointer-events-none">
+          Menu
+        </div>
+
+        {/* Clouds */}
+        <Image
+          src="/cloud (1).svg"
+          alt="cloud"
+          width={100}
+          height={100}
+          className="absolute z-10 left-[30%] top-[5%] w-[7%] h-auto object-contain anim-cloud"
+        />
+        <Image
+          src="/cloud (2).svg"
+          alt="cloud"
+          width={160}
+          height={100}
+          className="absolute z-10 right-[3%] top-[10%] w-[160px] h-auto object-contain anim-cloud-long"
+        />
+
+        {/* MENU ITEMS */}
+        <div className="grid grid-cols-4 gap-6 mt-56 px-16">
+          {menuItems.map(item => (
+            <MenuItem
+              key={item.id}
+              name={item.name}
+              price={item.price}
+              ingredients={item.ingredients}
+              onClick={() => {
+                setSelectedItem(item);
+                setQuantity(1);
+              }}
+            />
+          ))}
+        </div>
+
+        {selectedItem && (
+          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white shadow-xl rounded-2xl px-8 py-4 flex items-center gap-6 z-50">
+            <span className="font-semibold text-lg">{selectedItem.name}</span>
+
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                className="w-9 h-9 rounded-full bg-gray-200 text-xl font-bold"
+              >
+                −
+              </button>
+
+              <span className="w-6 text-center text-lg">{quantity}</span>
+
+              <button
+                onClick={() => setQuantity(q => q + 1)}
+                className="w-9 h-9 rounded-full bg-gray-200 text-xl font-bold"
+              >
+                +
+              </button>
+            </div>
+
+            <button
+              onClick={() => {
+                if (selectedItem) {
+                  addItemToTicket(ticketId, { id: selectedItem.id.toString(), name: selectedItem.name, price: selectedItem.price, quantity });
+                  setSelectedItem(null);
+                  setQuantity(1);
+                }
+              }}
+              className="bg-[#AF3939] text-white px-4 py-2 rounded-lg"
+            >
+              Add to Order
+            </button>
+          </div>
+        )}
+
+      </div>
+    </div>
+  );
+}
 
 export default function TableGrid() {
   const [selectedTable, setSelectedTable] = useState<number | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+  const [menuTicketId, setMenuTicketId] = useState<number | null>(null);
+  const [menuVisible, setMenuVisible] = useState(false);
 
   const router = useRouter();
+  const { createTicket } = useTickets();
 
   // Table/marker data
   const [tableData, setTableData] = useState<
@@ -35,6 +147,13 @@ export default function TableGrid() {
     { id: 5, status: "alert", type: "marker", markerNumber: 2, x: 400, y: 120 },
     { id: 6, status: "alert", type: "marker", markerNumber: 3, x: 160, y: 360 },
   ]);
+
+  // Create tickets for existing markers on mount
+  useEffect(() => {
+    tableData.filter(item => item.type === "marker").forEach(marker => {
+      createTicket(marker.markerNumber || 0, marker.id);
+    });
+  }, [createTicket, tableData]);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const movingIdRef = useRef<number | null>(null);
@@ -90,7 +209,13 @@ export default function TableGrid() {
 
   // Add a new item (table or marker)
   const handleAddItem = (type: "table" | "marker") => {
-    const newId = tableData.length ? Math.max(...tableData.map((t) => t.id)) + 1 : 1;
+    let newId;
+    if (type === "marker") {
+      // For markers, create a ticket first and use its id
+      newId = createTicket(0); // tableNumber 0 for now, or perhaps assign based on something
+    } else {
+      newId = tableData.length ? Math.max(...tableData.map((t) => t.id)) + 1 : 1;
+    }
 
     let newItem;
     if (type === "marker") {
@@ -225,8 +350,22 @@ export default function TableGrid() {
           markers={tableData.filter((t) => t.type === "marker")}
           selectedMarker={selectedTable}
           setSelectedMarker={setSelectedTable}
+          onUpdateOrder={(ticketId) => {
+            setMenuTicketId(ticketId);
+            setShowMenu(true);
+            setMenuVisible(true);
+          }}
         />
       </div>
+
+      {/* Menu Overlay */}
+      {menuVisible && menuTicketId && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className={`relative w-full h-full bg-[#FFFDFB] overflow-hidden transition-all duration-500 ease-out ${showMenu ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'}`}>
+            <MenuOverlay ticketId={menuTicketId} onClose={() => { setShowMenu(false); setTimeout(() => setMenuVisible(false), 500); }} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
