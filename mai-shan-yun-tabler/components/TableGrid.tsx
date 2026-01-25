@@ -366,10 +366,8 @@ export default function TableGrid() {
 
       {/* Menu Overlay */}
       {menuVisible && menuTicketId && (
-        <div className="fixed right-0 top-0 bottom-0 w-80 z-50">
-          <div className={`relative w-full h-full bg-[#FFFDFB] overflow-hidden transition-all duration-500 ease-out ${showMenu ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'}`}>
-            <MenuOverlay ticketId={menuTicketId} onClose={() => { setShowMenu(false); setTimeout(() => setMenuVisible(false), 500); }} />
-          </div>
+        <div className={`fixed inset-0 z-50 transition-all duration-500 ease-out ${showMenu ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'}`}>
+          <MenuOverlay ticketId={menuTicketId} onClose={() => { setShowMenu(false); setTimeout(() => setMenuVisible(false), 500); }} />
         </div>
       )}
     </div>
