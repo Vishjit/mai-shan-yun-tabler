@@ -7,10 +7,11 @@
     return (
       <div className="relative w-full h-screen bg-[#FFFDFB] overflow-hidden">
        
-        {/* Click to get started button */}
+        {/* Click to get started*/}
         <button
           onClick={() => router.push("/dashboard")}
-          className="absolute left-[684px] top-[922px] flex justify-center items-center text-[#FFFDFB] text-[36px] font-['Inter'] font-bold leading-[32px] cursor-pointer z-30"
+          aria-label="Get started"
+          className="absolute left-1/2 bottom-[78px] transform -translate-x-1/2 bg-[#AF3939] text-white text-[17px] md:text-[18px] px-5 py-2 md:px-10 md:py-5 rounded-[22px] font-['Inter'] font-bold leading-[20px] shadow-md z-30 transition-colors duration-200 ease-in-out border-4 border-transparent hover:bg-white hover:text-[#AF3939] hover:border-[#AF3939]"
         >
           Click to get started
         </button>
@@ -38,7 +39,7 @@
           <img src="/mountain 3.svg" alt="mountain" className="w-[50%] h-auto" />
           </div>
 
-        {/* Clouds - positioned above mountains but behind main text */}
+        {/* Clouds*/}
         <img src="/cloud (4).svg" alt="cloud" className="absolute z-10 right-[2%] top-[80%] w-[15%] h-auto object-contain" />
         <img src="/cloud (1).svg" alt="cloud" className="absolute z-10 left-[45%] top-[30%] w-[10%] h-auto object-contain" />
         <img src="/cloud.svg" alt="cloud" className="absolute z-10 left-[2%] top-[50%] w-[15%] h-auto object-contain" />
@@ -47,7 +48,7 @@
         <img src="/cloud (2).svg" alt="cloud" className="absolute z-10 right-[3%] top-[5%] w-[250px] h-auto object-contain" />
         <img src="/cloud (3).svg" alt="cloud" className="absolute z-10 right-[55%] top-[70%] w-[100px] h-auto object-contain" />
 
-        {/* Petals - floating above mountains */}
+        {/* Petals */}
         <img src="/petal.svg" alt="petal" className="absolute z-20 left-[35%] top-[58%] w-[36px] h-auto rotate-[-30deg]" />
         <img src="/petal.svg" alt="petal" className="absolute z-20 left-[75%] top-[90%] w-[40px] h-auto rotate-[10deg]" />
         <img src="/petals.svg" alt="petals" className="absolute z-20 left-[20%] top-[72%] w-[80px] h-auto opacity-90" />
