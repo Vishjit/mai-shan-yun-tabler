@@ -12,16 +12,29 @@
   --font-sans: var(--font-jost);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --maintext: #ededed;
-  }
-}
 
 body {
   background: var(--background);
   color: var(--maintext);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
+/* Animations for clouds */
+@keyframes cloudFloat {
+  0% { transform: translateX(0) translateY(0); }
+  50% { transform: translateX(-18px) translateY(6px); }
+  100% { transform: translateX(0) translateY(0); }
+}
+
+@keyframes cloudDrift {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-40px); }
+}
+
+.anim-cloud { animation: cloudFloat 10s ease-in-out infinite; will-change: transform; }
+.anim-cloud-slow { animation: cloudFloat 18s ease-in-out infinite; }
+.anim-cloud-long { animation: cloudFloat 14s ease-in-out infinite; }
+.anim-cloud-drift { animation: cloudDrift 40s linear infinite; }
+
+.anim-cloud, .anim-petal { backface-visibility: hidden; }
+
   

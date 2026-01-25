@@ -40,18 +40,18 @@
           </div>
 
         {/* Clouds*/}
-        <img src="/cloud (4).svg" alt="cloud" className="absolute z-10 right-[2%] top-[80%] w-[15%] h-auto object-contain" />
-        <img src="/cloud (1).svg" alt="cloud" className="absolute z-10 left-[45%] top-[30%] w-[10%] h-auto object-contain" />
-        <img src="/cloud.svg" alt="cloud" className="absolute z-10 left-[2%] top-[50%] w-[15%] h-auto object-contain" />
-        <img src="/cloud (6).svg" alt="cloud" className="absolute z-0 right-[20%] top-[40%] w-[200px] h-auto object-contain" />
-        <img src="/cloud (5).svg" alt="cloud" className="absolute z-0 right-[88%] top-[35%] w-[100px] h-auto object-contain" />
-        <img src="/cloud (2).svg" alt="cloud" className="absolute z-10 right-[3%] top-[5%] w-[250px] h-auto object-contain" />
-        <img src="/cloud (3).svg" alt="cloud" className="absolute z-10 right-[55%] top-[70%] w-[100px] h-auto object-contain" />
+        <img src="/cloud (4).svg" alt="cloud" className="absolute z-10 right-[2%] top-[80%] w-[15%] h-auto object-contain anim-cloud anim-cloud-long" />
+        <img src="/cloud (1).svg" alt="cloud" className="absolute z-10 left-[45%] top-[30%] w-[10%] h-auto object-contain anim-cloud anim-cloud-slow" />
+        <img src="/cloud.svg" alt="cloud" className="absolute z-10 left-[2%] top-[50%] w-[15%] h-auto object-contain anim-cloud" />
+        <img src="/cloud (6).svg" alt="cloud" className="absolute z-0 right-[20%] top-[40%] w-[200px] h-auto object-contain anim-cloud-drift" />
+        <img src="/cloud (5).svg" alt="cloud" className="absolute z-0 right-[88%] top-[35%] w-[100px] h-auto object-contain anim-cloud-slow" />
+        <img src="/cloud (2).svg" alt="cloud" className="absolute z-10 right-[3%] top-[5%] w-[250px] h-auto object-contain anim-cloud-long" />
+        <img src="/cloud (3).svg" alt="cloud" className="absolute z-10 right-[55%] top-[70%] w-[100px] h-auto object-contain anim-cloud" />
 
         {/* Petals */}
         <img src="/petal.svg" alt="petal" className="absolute z-20 left-[35%] top-[58%] w-[36px] h-auto rotate-[-30deg]" />
-        <img src="/petal.svg" alt="petal" className="absolute z-20 left-[75%] top-[90%] w-[40px] h-auto rotate-[10deg]" />
-        <img src="/petals.svg" alt="petals" className="absolute z-20 left-[20%] top-[72%] w-[80px] h-auto opacity-90" />
+        <img src="/petal.svg" alt="petal" className="absolute z-20 left-[75%] top-[90%] w-[40px] h-auto rotate-[10deg] " />
+        <img src="/petals.svg" alt="petals" className="absolute z-20 left-[20%] top-[72%] w-[80px] h-auto opacity-90 " />
 
       </div>
     );
