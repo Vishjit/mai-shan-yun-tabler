@@ -1,5 +1,5 @@
-#Mai-POS 🪑🍜
-A customized point of sale tabling and order management app developed for Mai Shan Yun, College Station. This was made in 24 hours during TamuHack 2026🍉. 
+## MaiPOS 🪑🍜
+- A customized point of sale tabling and order management app developed for Mai Shan Yun, College Station. This was made in 24 hours during TamuHack 2026🍉. 
 
 ## Features
 
