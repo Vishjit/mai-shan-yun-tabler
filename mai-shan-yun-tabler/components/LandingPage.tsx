@@ -20,7 +20,7 @@
           Mai Shan Yun Tabler
         </div>
         <div className="absolute left-[150px] top-[160px] flex justify-center items-center text-[#3D3D3D] text-[40px] font-['Jost'] font-normal leading-[32px] z-20">
-          tagline
+          From table to kitchen, simplified.
         </div>
          {/* logo */}
         <div className="absolute w-[85px] left-[40px] top-[55px] z-20">
