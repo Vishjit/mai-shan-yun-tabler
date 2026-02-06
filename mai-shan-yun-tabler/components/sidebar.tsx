@@ -9,6 +9,7 @@ import { useTickets } from "../context/ticketContext";
 interface MarkerData {
   id: number;
   status: TableStatus;
+  statusUpdatedAt?: number;
   markerNumber?: number;
 }
 
@@ -20,6 +21,7 @@ interface SidebarProps {
   selectedMarker: number | null;
   setSelectedMarker: (id: number | null) => void;
   onUpdateOrder: (ticketId: number) => void;
+  onChangeMarkerStatus?: (id: number, status: TableStatus) => void;
   onSaveLayout?: () => void;
   savedLayouts?: { id: number; name: string; thumbnail?: string }[];
   onLoadLayout?: (id: number) => void;
@@ -35,20 +37,36 @@ export default function Sidebar({
   selectedMarker,
   setSelectedMarker,
   onUpdateOrder,
+  onChangeMarkerStatus,
   onSaveLayout,
   savedLayouts = [],
   onLoadLayout,
   onDuplicateLayout,
   onDeleteLayout,
 }: SidebarProps) {
+  // Small inner component to show elapsed time since order placed
+  function OrderElapsed({ since }: { since?: number }) {
+    const [display, setDisplay] = React.useState<string>("00:00");
+    React.useEffect(() => {
+      if (!since) return;
+      const update = () => {
+        const sec = Math.max(0, Math.floor((Date.now() - since) / 1000));
+        const m = Math.floor(sec / 60);
+        const s = sec % 60;
+        setDisplay(`${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`);
+      };
+      update();
+      const id = window.setInterval(update, 1000);
+      return () => clearInterval(id);
+    }, [since]);
+
+    if (!since) return null;
+    return <div className="mt-2 text-sm text-gray-700">Time Since Order Placed: {display} minutes</div>;
+  }
   const [activeTab, setActiveTab] = useState<"layout" | "orders">("layout");
   const { getReceiptForTicket } = useTickets();
 
-  const statusLabel: Record<TableStatus, string> = {
-    available: "Eating",
-    ordering: "Waiting for Food",
-    alert: "Waiting for Service",
-  };
+  
 
   return (
     <aside
@@ -170,14 +188,28 @@ export default function Sidebar({
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <RiFilePaper2Line className="w-5 h-5" />
-                      <span className="font-bold">
-                        Marker {marker.markerNumber}
-                      </span>
+                      <span className="font-bold">Marker {marker.markerNumber}</span>
                     </div>
-                    <span className="text-sm text-gray-600">
-                      {statusLabel[marker.status]}
-                    </span>
+                    <div>
+                      <select
+                        value={marker.status}
+                        onClick={(e) => e.stopPropagation()}
+                        onChange={(e) => onChangeMarkerStatus && onChangeMarkerStatus(marker.id, e.target.value as TableStatus)}
+                        className="text-sm text-gray-700 bg-white border px-3 py-1 rounded"
+                        aria-label={`Marker ${marker.markerNumber} status`}
+                      >
+                        <option value="alert">Waiting for Service</option>
+                        <option value="ordering">Waiting for Food</option>
+                        <option value="available">Eating</option>
+                      </select>
+                    </div>
                   </div>
+                  {/* Elapsed timer directly under header so it's always visible */}
+                  {marker.status === "ordering" && marker.statusUpdatedAt && (
+                    <div className="mt-2">
+                      <OrderElapsed since={marker.statusUpdatedAt} />
+                    </div>
+                  )}
 
                   {/* Animated expanded content */}
                   <div
@@ -201,9 +233,10 @@ export default function Sidebar({
                           return <div>No items yet</div>;
                         }
                       })()}
-                      <button className="mt-2 w-full bg-[#AF3939] text-white py-1 rounded-lg" onClick={() => onUpdateOrder(marker.id)}>
-                        Update Order
-                      </button>
+                        <button className="mt-2 w-full bg-[#AF3939] text-white py-1 rounded-lg" onClick={() => onUpdateOrder(marker.id)}>
+                          Update Order
+                        </button>
+                        
                     </div>
                   </div>
                 </div>

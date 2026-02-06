@@ -47,6 +47,12 @@ export default function TableCard({
         cursor-grab active:cursor-grabbing
       `}
     >
+      {/* Small table heading */}
+      {type === "table" && (
+        <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 text-sm font-semibold text-gray-700">
+          Table {id}
+        </div>
+      )}
       {/* Controls */}
       {isSelected && (
         <div className="absolute -top-4 -left-4 flex space-x-1 z-30">

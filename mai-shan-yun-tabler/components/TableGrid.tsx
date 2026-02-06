@@ -982,6 +982,16 @@ export default function TableGrid() {
             setShowMenu(true);
             setMenuVisible(true);
           }}
+          onChangeMarkerStatus={(id, status) => {
+            setTableData(prev => prev.map(item => {
+              if (item.id === id && item.type === 'marker') {
+                if (status === 'ordering') return { ...item, status, statusUpdatedAt: Date.now() };
+                if (status === 'available') return { ...item, status, statusUpdatedAt: undefined };
+                return { ...item, status };
+              }
+              return item;
+            }));
+          }}
           onSaveLayout={handleSaveLayout}
           savedLayouts={savedLayouts}
           onLoadLayout={handleLoadLayout}
