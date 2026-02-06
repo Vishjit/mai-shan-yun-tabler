@@ -12,6 +12,7 @@ interface TableCardProps {
   onMoveToggle?: (id: number) => void;
   onCardMouseDown?: (e: React.MouseEvent, id: number) => void;
   onDelete?: (id: number) => void;
+  onDoubleClick?: () => void;
 }
 
 export default function TableCard({
@@ -24,6 +25,7 @@ export default function TableCard({
   onMoveToggle,
   onCardMouseDown,
   onDelete,
+  onDoubleClick,
 }: TableCardProps) {
   const [moveHover, setMoveHover] = useState(false);
   const [movePressed, setMovePressed] = useState(false);
@@ -33,6 +35,7 @@ export default function TableCard({
   return (
     <div
       onClick={onClick}
+      onDoubleClick={() => onDoubleClick?.()}
       onMouseDown={(e) => {
         e.stopPropagation();
         onCardMouseDown?.(e, id);

@@ -23,7 +23,7 @@ interface MenuItemType {
 
 interface SavedLayout {
   id: number;
-  name?: string;
+  name: string;
   thumbnail?: string;
   snapshot?: Array<{ id: number; type: "table" | "marker" | "item" | "group"; itemType?: string; x: number; y: number }>;
   groups: Array<{ tableId: number; items: Array<{ id: number; type: string }> }>;
@@ -70,21 +70,71 @@ function MenuOverlay({ ticketId, onClose }: { ticketId: number; onClose: () => v
           className="absolute z-10 right-[3%] top-[10%] w-[160px] h-auto object-contain anim-cloud-long"
         />
 
-        {/* MENU ITEMS */}
-        <div className="grid grid-cols-4 gap-6 mt-56 px-16">
-          {menuItems.map(item => (
-            <MenuItem
-              key={item.id}
-              name={item.name}
-              price={item.price}
-              ingredients={item.ingredients}
-              onClick={() => {
-                setSelectedItem(item);
-                const existingItem = ticket?.items.find(i => i.id === item.id.toString());
-                setQuantity(existingItem ? existingItem.quantity : 1);
-              }}
-            />
-          ))}
+        {/* MENU ITEMS - GROUPED BY CATEGORY */}
+        <div className="mt-56 px-16">
+          {(() => {
+            const categoryOrder = [
+              "Lunch Special",
+              "Special Offer",
+              "Appetizer",
+              "Rice Noodle",
+              "Tossed Rice Noodle",
+              "Ramen",
+              "Tossed Ramen",
+              "Fried Chicken",
+              "Fried Rice",
+              "Wonton",
+              "Drink",
+              "Additonal",
+              "Mai Dessert",
+              "Milk Tea",
+              "Jas-Lemonade",
+              "Fruit Tea",
+              "Allergies & Restrictions",
+            ];
+
+            const getCategoryFor = (m: any) => {
+              if (m.category) return m.category;
+              if (m.description === "Special Diet" || m.description === "Allergies & Restrictions") return "Allergies & Restrictions";
+              return "Uncategorized";
+            };
+
+            const allCategories = Array.from(new Set(menuItems.map((m) => getCategoryFor(m))));
+            const extras = allCategories.filter((c) => !categoryOrder.includes(c));
+            const ordered = [...categoryOrder, ...extras];
+
+            return ordered.map((category) => {
+              const items = menuItems.filter((m) => getCategoryFor(m) === category);
+              return (
+                <section key={category} className="mb-10">
+                  <div className="flex items-center justify-start gap-4 mb-4">
+                    <h2 className="text-3xl font-bold mb-0 text-[#3D3D3D]">{category}</h2>
+                    <span className="text-[#696159]">({items.length})</span>
+                  </div>
+
+                  <div className="grid grid-cols-4 gap-6">
+                    {items.length > 0 ? (
+                      items.map((item) => (
+                        <MenuItem
+                          key={item.id}
+                          name={item.name}
+                          price={item.price}
+                          ingredients={item.ingredients}
+                          onClick={() => {
+                            setSelectedItem(item as any);
+                            const existingItem = ticket?.items.find(i => i.id === item.id.toString());
+                            setQuantity(existingItem ? existingItem.quantity : 1);
+                          }}
+                        />
+                      ))
+                    ) : (
+                      <div className="col-span-4 text-[#696159] italic">No items in this category.</div>
+                    )}
+                  </div>
+                </section>
+              );
+            });
+          })()}
         </div>
 
         {selectedItem && (
@@ -416,7 +466,9 @@ export default function TableGrid() {
       .filter((t) => t.type === "table")
       .map((table) => ({
         tableId: table.id,
-        items: tableData.filter((it) => it.parentId === table.id).map((it) => ({ id: it.id, type: it.type === 'item' ? it.itemType : it.type })),
+        items: tableData
+          .filter((it) => it.parentId === table.id)
+          .map((it) => ({ id: it.id, type: it.type === 'item' ? (it.itemType ?? 'item') : it.type })),
       }));
 
     const itemsToInclude = tableData.filter((t) => t.type === "table" || t.type === "item" || t.type === "marker");
@@ -708,11 +760,8 @@ export default function TableGrid() {
               <div
                 key={item.id}
                 className="absolute transition-transform duration-150 ease-out"
-                style={{
-                  transform: `translate(${item.x}px, ${item.y}px)`,
-                }}
+                style={{ transform: `translate(${item.x}px, ${item.y}px)` }}
               >
-
                 {item.type === "table" ? (
                   <TableCard
                     id={item.id}
@@ -720,11 +769,10 @@ export default function TableGrid() {
                     type="table"
                     isSelected={selectedTable === item.id}
                     isMoving={movingId === item.id}
-                    showControls={(!(item as any).groupId || isolatedItemId === item.id)}
                     onClick={() => handleTableClick(item.id)}
                     onMoveToggle={handleMoveToggle}
                     onCardMouseDown={handleCardMouseDown}
-                    onDoubleClick={(id) => { setMovingId(id); setIsolatedItemId(id); }}
+                    onDoubleClick={() => { setMovingId(item.id); setIsolatedItemId(item.id); }}
                     onDelete={(id) =>
                       setTableData((prev) => prev.filter((t) => t.id !== id))
                     }
@@ -736,11 +784,10 @@ export default function TableGrid() {
                     status={item.status}
                     isSelected={selectedTable === item.id}
                     isMoving={movingId === item.id}
-                    showControls={(!(item as any).groupId || isolatedItemId === item.id)}
                     onClick={() => handleTableClick(item.id)}
                     onMoveToggle={handleMoveToggle}
                     onCardMouseDown={handleCardMouseDown}
-                    onDoubleClick={(id) => { setMovingId(id); setIsolatedItemId(id); }}
+                    onDoubleClick={() => { setMovingId(item.id); setIsolatedItemId(item.id); }}
                     onDelete={(id) =>
                       setTableData((prev) => prev.filter((t) => t.id !== id))
                     }

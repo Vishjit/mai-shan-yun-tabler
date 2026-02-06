@@ -16,6 +16,7 @@ interface MarkerProps {
   onMoveToggle?: (id: number) => void;
   onCardMouseDown?: (e: React.MouseEvent, id: number) => void;
   onDelete?: (id: number) => void;
+  onDoubleClick?: () => void;
 
   // NEW: functions to handle status changes
   onStatusForward?: (id: number) => void;
@@ -34,6 +35,7 @@ export default function Marker({
   onDelete,
   onStatusForward,
   onStatusBackward,
+  onDoubleClick,
 }: MarkerProps) {
   const statusBg: Record<TableStatus, string> = {
     available: "bg-green-300",
@@ -44,6 +46,7 @@ export default function Marker({
   return (
     <div
       onClick={onClick}
+      onDoubleClick={() => onDoubleClick?.()}
       onMouseDown={(e) => {
         e.stopPropagation();
         onCardMouseDown?.(e, id);
