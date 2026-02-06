@@ -55,7 +55,7 @@ export default function OrderPanel({ table }: OrderPanelProps) {
                   {o.name} × {o.quantity}
                 </span>
                 <span className="text-gray-500">
-                  ${(o.price * o.quantity).toFixed(2)}
+                  ${((o.price ?? 0) * o.quantity).toFixed(2)}
                 </span>
               </div>
             ))}

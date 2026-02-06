@@ -27,6 +27,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        {/* Primary favicon (uploaded) and SVG fallback */}
+        <link rel="icon" href="/favicon (2).ico" />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {/* Wrap everything in TicketProvider */}
         <TicketProvider>{children}</TicketProvider>

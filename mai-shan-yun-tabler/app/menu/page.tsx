@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { menuItems } from "@/lib/menu";
@@ -20,8 +19,13 @@ interface MenuItemType {
 }
 
 export default function Menu() {
-    const searchParams = useSearchParams();
-    const ticketId = parseInt(searchParams.get("ticketId") || "0");
+    const [ticketId, setTicketId] = useState<number>(0);
+
+    useEffect(() => {
+      const sp = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+      const id = sp ? parseInt(sp.get("ticketId") || "0") : 0;
+      setTicketId(id);
+    }, []);
     const { getTicketById, addItemToTicket, getReceiptForTicket } = useTickets();
     const router = useRouter();
 

@@ -6,6 +6,7 @@ export interface OrderItem {
   itemId: number;
   name: string;
   quantity: number;
+  price?: number;
 }
 
 // Table interface
