@@ -7,6 +7,7 @@ interface TableCardProps {
   displayNumber?: number;
   status: TableStatus;
   type: "table" | "marker";
+  variant?: string;
   isSelected: boolean;
   isMoving?: boolean;
   onClick: () => void;
@@ -21,6 +22,7 @@ export default function TableCard({
   displayNumber,
   status,
   type,
+  variant,
   isSelected,
   isMoving,
   onClick,
@@ -120,7 +122,7 @@ export default function TableCard({
       <div className="w-full h-full flex items-center justify-center">
         {type === "table" ? (
           <img
-            src="/table.svg"
+            src={`/${variant ?? "table.svg"}`}
             alt={`Table ${id}`}
             className="w-full h-full object-contain"
           />

@@ -208,6 +208,7 @@ export default function TableGrid() {
       groupId?: number | null;
       width?: number;
       height?: number;
+      variant?: string;
     }[]
   >([
     { id: 1, status: "available", type: "table", x: 120, y: 80 },
@@ -330,7 +331,7 @@ export default function TableGrid() {
   };
 
   // Add a new item (table, marker, or chair/couch)
-  const handleAddItem = (type: string) => {
+  const handleAddItem = (type: string, variant?: string) => {
     const newId = tableData.length ? Math.max(...tableData.map((t) => t.id)) + 1 : 1;
 
     let newItem: any;
@@ -356,7 +357,8 @@ export default function TableGrid() {
         x: 200,
         y: 200,
         parentId: null,
-      };
+        variant: variant, // optional image variant for table (e.g., 'couch-table.png')
+      } as any;
     } else {
       // generic item (chair/couch)
       newItem = {
@@ -774,6 +776,7 @@ export default function TableGrid() {
                       <TableCard
                         id={item.id}
                         displayNumber={displayNumber}
+                          variant={(item as any).variant}
                         status={item.status}
                         type="table"
                         isSelected={selectedTable === item.id}

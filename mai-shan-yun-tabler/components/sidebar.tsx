@@ -16,7 +16,7 @@ interface MarkerData {
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddItem: (type: "table" | "marker") => void;
+  onAddItem: (type: "table" | "marker", variant?: string) => void;
   markers: MarkerData[];
   selectedMarker: number | null;
   setSelectedMarker: (id: number | null) => void;
@@ -116,7 +116,7 @@ export default function Sidebar({
                 className="cursor-pointer"
                 onClick={() => onAddItem("table")}
               >
-                <div className="bg-white rounded-xl p-4 flex justify-center">
+                <div className="bg-white rounded-xl p-4 flex justify-center items-center h-36">
                   <Image src="/table.svg" alt="table" width={64} height={64} />
                 </div>
                 <div className="text-center mt-2">Table</div>
@@ -124,9 +124,19 @@ export default function Sidebar({
 
               <div
                 className="cursor-pointer"
+                onClick={() => onAddItem("table", "couch table.png")}
+              >
+                <div className="bg-white rounded-xl p-4 flex justify-center items-center h-36">
+                  <Image src="/couch table.png" alt="couch table" width={64} height={64} />
+                </div>
+                <div className="text-center mt-2">Table 2</div>
+              </div>
+
+              <div
+                className="cursor-pointer col-span-2"
                 onClick={() => onAddItem("marker")}
               >
-                <div className="bg-white rounded-xl p-4 flex justify-center">
+                <div className="bg-white rounded-xl p-4 flex justify-center items-center h-36">
                   <RiFilePaper2Line className="w-8 h-8 text-[#57321F]" />
                 </div>
                 <div className="text-center mt-2">Marker</div>
