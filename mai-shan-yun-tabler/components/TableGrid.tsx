@@ -159,12 +159,13 @@ function MenuOverlay({ ticketId, onClose }: { ticketId: number; onClose: () => v
             </div>
 
             <button
-              onClick={() => {
+                onClick={() => {
                 if (selectedItem) {
                   if (quantity > 0) {
-                    addItemToTicket(ticketId, { id: selectedItem.id.toString(), name: selectedItem.name, price: selectedItem.price, quantity });
+                    // This update originates from the tables sidebar -> request kitchen print
+                    addItemToTicket(ticketId, { id: selectedItem.id.toString(), name: selectedItem.name, price: selectedItem.price, quantity }, true);
                   } else {
-                    removeItemFromTicket(ticketId, selectedItem.id.toString());
+                    removeItemFromTicket(ticketId, selectedItem.id.toString(), true);
                   }
                   setSelectedItem(null);
                   setQuantity(1);
