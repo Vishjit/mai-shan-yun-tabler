@@ -139,7 +139,7 @@ export default function Sidebar({
                 <div className="font-semibold">Saved layouts</div>
                 <button
                   onClick={() => onSaveLayout && onSaveLayout()}
-                  className="text-sm bg-[#AF3939] text-white px-3 py-1 rounded"
+                  className="text-sm bg-[#AF3939] text-white px-3 py-1 rounded hover:bg-white hover:text-[#AF3939] hover:shadow-md hover:border hover:border-[#AF3939] transition-all duration-150"
                 >
                   Save
                 </button>
@@ -233,7 +233,10 @@ export default function Sidebar({
                           return <div>No items yet</div>;
                         }
                       })()}
-                        <button className="mt-2 w-full bg-[#AF3939] text-white py-1 rounded-lg" onClick={() => onUpdateOrder(marker.id)}>
+                        <button
+                          className="mt-2 w-full bg-[#AF3939] text-white py-1 rounded-lg hover:bg-white hover:text-[#AF3939] hover:shadow-md hover:border hover:border-[#AF3939] transform active:translate-y-0.5 transition-all duration-150"
+                          onClick={() => onUpdateOrder(marker.id)}
+                        >
                           Update Order
                         </button>
                         
@@ -247,7 +250,7 @@ export default function Sidebar({
 
         <button
           onClick={onClose}
-          className="mt-6 bg-[#AF3939] text-white py-2 rounded-lg"
+          className="mt-6 bg-[#AF3939] text-white py-2 rounded-lg hover:bg-white hover:text-[#AF3939] hover:shadow-md hover:border hover:border-[#AF3939] transition-all duration-150"
         >
           Close
         </button>
