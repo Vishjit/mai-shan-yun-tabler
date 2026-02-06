@@ -39,12 +39,13 @@ function MenuOverlay({ ticketId, onClose }: { ticketId: number; onClose: () => v
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="relative w-full h-full bg-[#FFFDFB] overflow-hidden">
+      <div className="relative w-full h-full bg-[#FFFDFB] overflow-auto">
         
-        {/* Back Button */}
+        {/* Back Button (sticky so it's visible while scrolling) */}
         <button
           onClick={onClose}
-          className="absolute top-4 left-4 w-10 h-10 rounded-full bg-[#AF3939] text-white flex items-center justify-center text-xl font-bold z-50"
+          className="sticky top-4 left-4 w-10 h-10 rounded-full bg-[#AF3939] text-white flex items-center justify-center text-xl font-bold z-50"
+          style={{ position: '-webkit-sticky' as any }}
         >
           ←
         </button>

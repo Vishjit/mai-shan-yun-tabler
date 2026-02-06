@@ -70,22 +70,32 @@ export default function Menu() {
     return (
       <>
         <div className="relative w-full h-screen bg-[#FFFDFB] overflow-hidden">
-          {/* Top buttons / nav */}
-          <div className="flex space-x-3 p-4 mb-6 items-center">
-            <div onClick={() => router.push("/tables")} className="cursor-pointer">
-              <TableButton />
-            </div>
-            <div onClick={() => router.push("/kitchen")} className="cursor-pointer">
-              <Kitchen />
-            </div>
-            <div onClick={() => router.push("/analytics")} className="cursor-pointer">
-              <Analytics />
-            </div>
-          </div>
+          {/* Sticky header: buttons + heading with background so it remains visible while scrolling */}
+          <div className="sticky top-0">
+            <div className="relative">
+              {/* background for header (sits below clouds) */}
+              <div className="absolute inset-0 pointer-events-none" style={{ backgroundColor: '#FFFDFB', zIndex: 10 }} />
 
-          {/* Title */}
-          <div className="absolute top-[6%] justify-center w-full text-[44px] font-['Jost'] font-bold flex pointer-events-none">
-            Menu
+              <div className="flex items-center p-4 relative" style={{ zIndex: 40 }}>
+                {/* Left: nav buttons */}
+                <div className="flex space-x-3 items-center">
+                  <div onClick={() => router.push("/tables")} className="cursor-pointer">
+                    <TableButton />
+                  </div>
+                  <div onClick={() => router.push("/kitchen")} className="cursor-pointer">
+                    <Kitchen />
+                  </div>
+                  <div onClick={() => router.push("/analytics")} className="cursor-pointer">
+                    <Analytics />
+                  </div>
+                </div>
+
+                {/* Centered heading (absolute-centered so it's always centered) */}
+                <div className="absolute left-1/2 transform -translate-x-1/2 pointer-events-none">
+                  <div className="text-[44px] font-['Jost'] font-bold">Menu</div>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* mountain */}
@@ -97,24 +107,26 @@ export default function Menu() {
             className="fixed bottom-0 right-0 w-80 h-auto z-0 pointer-events-none"
           />
 
-          {/* Clouds */}
+          {/* Clouds (lower z so menu cards scroll over them) */}
           <Image
             src="/cloud (1).svg"
             alt="cloud"
             width={100}
             height={100}
-            className="absolute z-10 left-[30%] top-[5%] w-[7%] h-auto object-contain anim-cloud"
+            className="absolute left-[30%] top-[5%] w-[7%] h-auto object-contain anim-cloud"
+            style={{ zIndex: 15 }}
           />
           <Image
             src="/cloud (2).svg"
             alt="cloud"
             width={160}
             height={100}
-            className="absolute z-10 right-[3%] top-[10%] w-40 h-auto object-contain anim-cloud-long"
+            className="absolute right-[3%] top-[10%] w-40 h-auto object-contain anim-cloud-long"
+            style={{ zIndex: 15 }}
           />
 
           {/* MENU ITEMS - GROUPED BY CATEGORY  */}
-          <div className="mt-40 px-16 pb-16 overflow-y-auto h-[calc(100vh-160px)]">
+          <div className="mt-6 px-16 pb-16 overflow-y-auto h-[calc(100vh-160px)] relative z-30">
             {(() => {
               const categoryOrder = [
                 "Lunch Special",
