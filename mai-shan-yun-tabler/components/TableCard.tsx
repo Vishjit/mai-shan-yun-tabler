@@ -4,6 +4,7 @@ import { RiFilePaper2Line } from "react-icons/ri";
 
 interface TableCardProps {
   id: number;
+  displayNumber?: number;
   status: TableStatus;
   type: "table" | "marker";
   isSelected: boolean;
@@ -17,6 +18,7 @@ interface TableCardProps {
 
 export default function TableCard({
   id,
+  displayNumber,
   status,
   type,
   isSelected,
@@ -50,7 +52,7 @@ export default function TableCard({
       {/* Small table heading */}
       {type === "table" && (
         <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 text-sm font-semibold text-gray-700">
-          Table {id}
+          Table {displayNumber ?? id}
         </div>
       )}
       {/* Controls */}

@@ -90,7 +90,7 @@ export default function Menu() {
                   </div>
                 </div>
 
-                {/* Centered heading (absolute-centered so it's always centered) */}
+                {/* Centered heading */}
                 <div className="absolute left-1/2 transform -translate-x-1/2 pointer-events-none">
                   <div className="text-[44px] font-['Jost'] font-bold">Menu</div>
                 </div>

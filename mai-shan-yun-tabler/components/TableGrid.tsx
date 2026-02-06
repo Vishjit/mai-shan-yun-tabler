@@ -765,20 +765,29 @@ export default function TableGrid() {
                 style={{ transform: `translate(${item.x}px, ${item.y}px)` }}
               >
                 {item.type === "table" ? (
-                  <TableCard
-                    id={item.id}
-                    status={item.status}
-                    type="table"
-                    isSelected={selectedTable === item.id}
-                    isMoving={movingId === item.id}
-                    onClick={() => handleTableClick(item.id)}
-                    onMoveToggle={handleMoveToggle}
-                    onCardMouseDown={handleCardMouseDown}
-                    onDoubleClick={() => { setMovingId(item.id); setIsolatedItemId(item.id); }}
-                    onDelete={(id) =>
-                      setTableData((prev) => prev.filter((t) => t.id !== id))
-                    }
-                  />
+                  // compute a user-friendly sequential table number based on current tableData order
+                  (() => {
+                    const tables = tableData.filter(t => t.type === 'table').sort((a, b) => a.id - b.id);
+                    const idx = tables.findIndex(t => t.id === item.id);
+                    const displayNumber = idx >= 0 ? idx + 1 : item.id;
+                    return (
+                      <TableCard
+                        id={item.id}
+                        displayNumber={displayNumber}
+                        status={item.status}
+                        type="table"
+                        isSelected={selectedTable === item.id}
+                        isMoving={movingId === item.id}
+                        onClick={() => handleTableClick(item.id)}
+                        onMoveToggle={handleMoveToggle}
+                        onCardMouseDown={handleCardMouseDown}
+                        onDoubleClick={() => { setMovingId(item.id); setIsolatedItemId(item.id); }}
+                        onDelete={(id) =>
+                          setTableData((prev) => prev.filter((t) => t.id !== id))
+                        }
+                      />
+                    );
+                  })()
                 ) : item.type === "marker" ? (
                   <Marker
                     id={item.id}
