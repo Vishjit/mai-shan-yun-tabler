@@ -68,7 +68,8 @@ function MenuOverlay({ ticketId, onClose }: { ticketId: number; onClose: () => v
           alt="cloud"
           width={160}
           height={100}
-          className="absolute z-10 right-[3%] top-[10%] w-[160px] h-auto object-contain anim-cloud-long"
+          className="absolute z-10 right-[3%] top-[10%] h-auto object-contain anim-cloud-long"
+          style={{ width: 160 }}
         />
 
         {/* MENU ITEMS - GROUPED BY CATEGORY */}

@@ -11,15 +11,16 @@ import Kitchen from "@/components/kitchenbutton";
 import Analytics from "@/components/analyticsbutton";
 import TableButton from "@/components/tablesbutton";
 
-interface MenuItemType {
-  id: number;
-  name: string;
-  price: number;
-  ingredients: string;
-}
+type MenuItemType = (typeof menuItems)[number];
 
 export default function Menu() {
     const [ticketId, setTicketId] = useState<number>(0);
+
+  // Local editable copy of menu items 
+  const [menuList, setMenuList] = useState(() => menuItems);
+  const [isEditingMode, setIsEditingMode] = useState(false);
+  const [editingItem, setEditingItem] = useState<MenuItemType | null>(null);
+  const [checkedItems, setCheckedItems] = useState<number[]>([]);
 
     useEffect(() => {
       const sp = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
@@ -67,6 +68,16 @@ export default function Menu() {
       };
     }, [selectedItem]);
 
+    // Load persisted menu edits
+    useEffect(() => {
+      try {
+        const raw = localStorage.getItem("menuList");
+        if (raw) setMenuList(JSON.parse(raw));
+      } catch (e) {
+        // ignore
+      }
+    }, []);
+
     return (
       <>
         <div className="relative w-full h-screen bg-[#FFFDFB] overflow-hidden">
@@ -79,16 +90,16 @@ export default function Menu() {
               <div className="flex items-center p-4 relative" style={{ zIndex: 40 }}>
                 {/* Left: nav buttons */}
                 <div className="flex space-x-3 items-center">
-                  <div onClick={() => router.push("/tables")} className="cursor-pointer">
-                    <TableButton />
+                    <div onClick={() => router.push("/tables")} className="cursor-pointer">
+                      <TableButton />
+                    </div>
+                    <div onClick={() => router.push("/kitchen")} className="cursor-pointer">
+                      <Kitchen />
+                    </div>
+                    <div onClick={() => router.push("/analytics")} className="cursor-pointer">
+                      <Analytics />
+                    </div>
                   </div>
-                  <div onClick={() => router.push("/kitchen")} className="cursor-pointer">
-                    <Kitchen />
-                  </div>
-                  <div onClick={() => router.push("/analytics")} className="cursor-pointer">
-                    <Analytics />
-                  </div>
-                </div>
 
                 {/* Centered heading */}
                 <div className="absolute left-1/2 transform -translate-x-1/2 pointer-events-none">
@@ -107,7 +118,7 @@ export default function Menu() {
             className="fixed bottom-0 right-0 w-80 h-auto z-0 pointer-events-none"
           />
 
-          {/* Clouds (lower z so menu cards scroll over them) */}
+          {/* Clouds*/}
           <Image
             src="/cloud (1).svg"
             alt="cloud"
@@ -154,12 +165,12 @@ export default function Menu() {
                 return "Uncategorized";
               };
 
-              const allCategories = Array.from(new Set(menuItems.map((m) => getCategoryFor(m))));
+              const allCategories = Array.from(new Set(menuList.map((m) => getCategoryFor(m))));
               const extras = allCategories.filter((c) => !categoryOrder.includes(c));
               const ordered = [...categoryOrder, ...extras];
 
               return ordered.map((category) => {
-                const items = menuItems.filter((m) => getCategoryFor(m) === category);
+                const items = menuList.filter((m) => getCategoryFor(m) === category);
                 return (
                   <section key={category} className="mb-10">
                     <div className="flex items-center justify-start gap-4 mb-4">
@@ -169,18 +180,42 @@ export default function Menu() {
 
                     <div className="grid grid-cols-4 gap-6">
                       {items.length > 0 ? (
-                        items.map((item) => (
-                          <MenuItem
-                            key={item.id}
-                            name={item.name}
-                            price={item.price}
-                            ingredients={item.ingredients}
-                            onClick={() => {
-                              setSelectedItem(item as any);
-                              setQuantity(1);
-                            }}
-                          />
-                        ))
+                        items.map((item) => {
+                          const isChecked = checkedItems.includes(item.id as any);
+                          return (
+                            <div key={item.id} className="relative">
+                              <MenuItem
+                                name={item.name}
+                                price={item.price}
+                                ingredients={item.ingredients}
+                                onClick={() => {
+                                  if (isEditingMode) {
+                                    setEditingItem(item as any);
+                                    return;
+                                  }
+                                  setSelectedItem(item as any);
+                                  setQuantity(1);
+                                }}
+                              />
+
+                              {/* buttons overlayyy */}
+                              <div className="absolute top-[-3] right-[-2] z-50 flex items-center space-x-2">
+                              
+
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setEditingItem(item as any);
+                                  }}
+                                  title="Edit"
+                                  className="w-7 h-7 bg-[#AF3939] rounded-full flex items-center justify-center text-white shadow"
+                                >
+                                  <img src="/edit.svg" alt="edit" className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </div>
+                          );
+                        })
                       ) : (
                         <div className="col-span-4 text-[#696159] italic">No items in this category.</div>
                       )}
@@ -209,7 +244,7 @@ export default function Menu() {
             </div>
           )}
 
-          {selectedItem && (
+          {/* {selectedItem && (
             <div ref={panelRef} className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#FFFDFB] shadow-xl rounded-2xl px-8 py-4 flex items-center gap-6 z-50">
               <span className="font-semibold text-lg">{selectedItem.name}</span>
 
@@ -231,6 +266,68 @@ export default function Menu() {
               >
                 Add to Order
               </button>
+            </div>
+          )} */}
+
+          {/* Edit modal for menu */}
+          {editingItem && (
+            <div className="fixed inset-0 bg-[#cfcfcf8c] flex items-center justify-center z-50">
+              <div className="bg-white rounded-2xl p-6 shadow-lg" style={{ width: 520 }}>
+                <h3 className="text-xl font-bold mb-4">Edit Menu Item</h3>
+
+                <div className="space-y-3">
+                  <label className="block">
+                    <div className="text-sm text-gray-600">Name</div>
+                    <input
+                      className="w-full border rounded px-3 py-2"
+                      value={editingItem.name}
+                      onChange={(e) => setEditingItem({ ...(editingItem as any), name: e.target.value })}
+                    />
+                  </label>
+
+                  <label className="block">
+                    <div className="text-sm text-gray-600">Price</div>
+                    <input
+                      type="number"
+                      step="0.01"
+                      className="w-full border rounded px-3 py-2"
+                      value={editingItem.price}
+                      onChange={(e) => setEditingItem({ ...(editingItem as any), price: parseFloat(e.target.value || "0") })}
+                    />
+                  </label>
+
+                  <label className="block">
+                    <div className="text-sm text-gray-600">Ingredients</div>
+                    <textarea
+                      className="w-full border rounded px-3 py-2"
+                      value={editingItem.ingredients ?? ""}
+                      onChange={(e) => setEditingItem({ ...(editingItem as any), ingredients: e.target.value })}
+                    />
+                  </label>
+                </div>
+
+                <div className="mt-4 flex justify-end space-x-3">
+                  <button
+                    onClick={() => setEditingItem(null)}
+                    className="px-4 py-2 rounded bg-gray-200"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (!editingItem) return;
+                      const newList = menuList.map((m) => (m.id === editingItem.id ? editingItem : m));
+                      setMenuList(newList);
+                      // persist immediately while editing as well
+                      try { localStorage.setItem("menuList", JSON.stringify(newList)); } catch (e) {}
+                      setEditingItem(null);
+                    }}
+                    className="px-4 py-2 rounded bg-[#AF3939] text-white"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
             </div>
           )}
         </div>

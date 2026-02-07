@@ -5,7 +5,8 @@ export default function TableButton() {
 
   return (
     <div
-      className="relative inline-flex flex-col items-center justify-center w-[80px] z-50 cursor-pointer font-['Jost'] text-center"
+      className="relative inline-flex flex-col items-center justify-center z-50 cursor-pointer font-['Jost'] text-center"
+      style={{ width: 80 }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
